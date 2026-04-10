@@ -38,6 +38,8 @@ The system uses official Hong Kong government open data and related official API
 | Weather and rainfall | Hong Kong Observatory open data API | Penalise open-air roadside parking during rainfall |
 | Destination lookup | Hong Kong geodata location search service | Resolve free-form user-entered destinations into selectable map locations |
 
+**Table 1.** Summary of the external data sources and services used by the system.
+
 The live endpoints used by the implemented flow are:
 
 - `https://resource.data.one.gov.hk/td/psiparkingspaces/spaceinfo/parkingspaces.csv`
@@ -72,6 +74,8 @@ flowchart LR
     L --> M
 ```
 
+**Figure 1.** Overall system architecture showing the relationship between data ingestion, storage, analytics, destination control, and dashboard presentation.
+
 ### 4.1 Ingestion flow
 
 The ingestion layer polls the external transport, parking, traffic, and weather datasets every five minutes. Each source is parsed into a uniform structure before storage:
@@ -95,6 +99,8 @@ MongoDB is used to preserve time-stamped historical observations. The following 
 | `weather_snapshots` | Weather and rainfall snapshots |
 | `destination_profiles` | Destination metadata and seeded defaults |
 | `recommendation_logs` | Persisted recommendation outputs for debugging and report evidence |
+
+**Table 2.** MongoDB collections used to store normalised live data, destination metadata, and computed recommendation evidence.
 
 Each parking snapshot stores an array of normalised parking records with the following fields:
 
@@ -201,6 +207,8 @@ flowchart TB
     C --> E[Historical trend panel]
     D --> E
 ```
+
+**Figure 2.** Dashboard layout showing how user controls feed into advisory, roadside, private backup, and historical insight panels.
 
 ### 6.1 Control panel
 
@@ -309,6 +317,83 @@ Future work could include:
 
 This project demonstrates a complete smart-city multimedia application in Node-RED that satisfies the core assignment requirements of data acquisition, analysis, correlation, historical storage, and dashboard presentation. By combining parking, traffic, weather, and destination lookup datasets, the system produces a recommendation that is more useful than a static parking display. MongoDB enables both predictive depletion estimation and historical congestion analysis, while the dashboard communicates the resulting insights through destination search, matched-location selection, risk indicators, backup rankings, and historical charts. Overall, the project shows how open government data can be transformed into a proactive urban mobility service through lightweight but effective multimedia systems engineering.
 
+## Appendix A. System Screenshots
+
+This appendix should contain screenshots of the implemented system as submission evidence. A clear appendix can be organised as follows.
+
+### A.1 Full dashboard overview
+
+This screenshot should give the reader an immediate understanding of the whole user interface and how the major smart-city insights are arranged on one dashboard page.
+
+Include one full-page screenshot showing the overall dashboard layout, including the control panel, advisory panel, roadside panel, private backup panel, and historical trends panel.
+
+Suggested caption: `Figure A1. Full dashboard overview of the Smart Mobility & Dynamic Parking Navigation System.`
+
+### A.2 Destination search and matched-location selection
+
+This screenshot should illustrate the interactive destination-resolution workflow and show that the system supports free-form place input rather than only preset destinations.
+
+Include a screenshot showing:
+
+- the typed destination query
+- the matched-location dropdown
+- the selected location result
+- region-aware labels such as Hong Kong Island, Kowloon, or New Territories
+
+Suggested caption: `Figure A2. Free-form destination search and matched-location selection.`
+
+### A.3 Roadside prediction and risk assessment
+
+This screenshot should illustrate the predictive roadside parking component of the smart mobility use case.
+
+Include a screenshot showing:
+
+- the roadside availability gauge
+- the nearest meter summary
+- the depletion countdown
+- the arrival risk badge
+
+Suggested caption: `Figure A3. Roadside prediction, depletion countdown, and arrival risk assessment.`
+
+### A.4 Private backup recommendation panel
+
+This screenshot should illustrate the fallback recommendation mechanism used when roadside parking is less suitable.
+
+Include a screenshot showing the ranked nearby private car parks and the indoor backup recommendation table.
+
+Suggested caption: `Figure A4. Ranked nearby private car park and sheltered backup recommendations.`
+
+### A.5 Historical trends and congestion hotspots
+
+This screenshot should illustrate the historical analytics part of the project and show that the system provides more than a live snapshot.
+
+Include a screenshot showing:
+
+- `Today vs Yesterday Nearby Availability`
+- `Collected History Pattern`
+- the congestion hotspot table
+
+Suggested caption: `Figure A5. Historical parking trends and congestion hotspot summary.`
+
+### A.6 Suggested screenshot captions
+
+You may use captions such as:
+
+- `Figure A1. Full dashboard overview.`
+- `Figure A2. Free-form destination search and matched-location selection.`
+- `Figure A3. Roadside prediction and risk assessment.`
+- `Figure A4. Private backup recommendations.`
+- `Figure A5. Historical trends and congestion hotspots.`
+
+### A.7 Node-RED Flow Implementation Screenshots
+
+These screenshots provide implementation evidence for the internal Node-RED structure of the submitted system.
+
+- `Figure A6. Setup flow in Node-RED.` This figure shows the setup tab, which initialises default destination profiles and seeds dashboard metadata.
+- `Figure A7. Ingestion flow in Node-RED.` This figure shows the ingestion tab, which fetches roadside parking, private car park, traffic, and weather data and normalises them before storage.
+- `Figure A8. Analytics flow in Node-RED.` This figure shows the analytics tab, which retrieves MongoDB history and computes recommendations, depletion logic, traffic feasibility, and historical insight outputs.
+- `Figure A9. Dashboard flow in Node-RED.` This figure shows the dashboard tab, which handles destination search, matched-location selection, refresh logic, and final widget rendering.
+
 ## References
 
 1. Department of Computer Science, The University of Hong Kong. *COMP7503C Multimedia Technologies Programming Assignment*. Accessed from the assignment PDF provided in the course materials.
@@ -318,5 +403,6 @@ This project demonstrates a complete smart-city multimedia application in Node-R
 5. Transport Department, Hong Kong SAR Government. *Journey Time Indication System data*. https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml
 6. Hong Kong Observatory. *Current weather report API*. https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en
 7. Hong Kong Observatory. *Hourly rainfall API*. https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=en
-8. Node-RED. https://nodered.org/
-9. MongoDB. https://www.mongodb.com/
+8. Hong Kong Geodata Store. *Location search service*. https://geodata.gov.hk/
+9. Node-RED. https://nodered.org/
+10. MongoDB. https://www.mongodb.com/

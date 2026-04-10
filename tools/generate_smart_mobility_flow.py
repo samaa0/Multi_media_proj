@@ -1060,10 +1060,10 @@ function hotspotTable(docs, profile, historyDescriptor) {
     }).sort((a, b) => a.ratio - b.ratio).slice(0, 3);
 
     const htmlRows = rows.map((row) => {
-        const color = row.ratio < 0.2 ? "#b91c1c" : row.ratio < 0.4 ? "#c2410c" : "#0f766e";
+        const severityClass = row.ratio < 0.2 ? "severe" : row.ratio < 0.4 ? "busy" : "manageable";
         const label = `${String(row.hour).padStart(2, "0")}:00 - ${String((row.hour + 1) % 24).padStart(2, "0")}:00`;
         const badge = row.ratio < 0.2 ? "Severe" : row.ratio < 0.4 ? "Busy" : "Manageable";
-        return `<tr><td>${label}</td><td><span class="sm-badge" style="background:${color};">${badge}</span></td><td style="color:${color};font-weight:700;">${Math.round(row.ratio * 100)}%</td></tr>`;
+        return `<tr><td>${label}</td><td><span class="sm-badge ${severityClass}">${badge}</span></td><td><span class="sm-history-value ${severityClass}">${Math.round(row.ratio * 100)}%</span></td></tr>`;
     }).join("");
 
     return `<div class="sm-card sm-history-card"><div class="sm-card-header"><div><div class="sm-eyebrow">Historical Heatmap-Style View</div><div class="sm-title">Congestion hotspots</div></div><div class="sm-muted">${historyDescriptor}</div></div><table class="sm-table"><thead><tr><th>Time window</th><th>Severity</th><th>Average availability</th></tr></thead><tbody>${htmlRows || '<tr><td colspan="3">No historical data available yet.</td></tr>'}</tbody></table></div>`;
@@ -1634,6 +1634,27 @@ nodes = [
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+.sm-badge.severe {
+  background: #b91c1c;
+}
+.sm-badge.busy {
+  background: #c2410c;
+}
+.sm-badge.manageable {
+  background: #0f766e;
+}
+.sm-history-value.severe {
+  color: #b91c1c;
+}
+.sm-history-value.busy {
+  color: #c2410c;
+}
+.sm-history-value.manageable {
+  color: #0f766e;
+}
+.sm-history-value {
+  font-weight: 700;
 }
 .sm-history-card .sm-muted {
   text-align: right;
