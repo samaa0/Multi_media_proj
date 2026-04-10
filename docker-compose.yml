@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: smartmobility-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      TZ: Asia/Hong_Kong
+    volumes:
+      - mongo_data:/data/db
+
+  nodered:
+    build:
+      context: .
+      dockerfile: docker/node-red/Dockerfile
+    container_name: smartmobility-nodered
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "1880:1880"
+    environment:
+      TZ: Asia/Hong_Kong
+    volumes:
+      - node_red_data:/data
+      - ./docker/node-red/data/flows.json:/data/flows.json:ro
+      - ./docker/node-red/data/settings.js:/data/settings.js:ro
+
+volumes:
+  mongo_data:
+  node_red_data:

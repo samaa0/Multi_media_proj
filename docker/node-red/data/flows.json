@@ -1,0 +1,2032 @@
+[
+    {
+        "id": "tab_setup",
+        "type": "tab",
+        "z": "",
+        "label": "0. Setup",
+        "disabled": false,
+        "info": "Initialise destination presets and dashboard defaults."
+    },
+    {
+        "id": "tab_ingest",
+        "type": "tab",
+        "z": "",
+        "label": "1. Ingestion",
+        "disabled": false,
+        "info": "Fetch, normalise, and store smart mobility datasets."
+    },
+    {
+        "id": "tab_analytics",
+        "type": "tab",
+        "z": "",
+        "label": "2. Analytics",
+        "disabled": false,
+        "info": "Read MongoDB history and compute parking recommendations."
+    },
+    {
+        "id": "tab_dashboard",
+        "type": "tab",
+        "z": "",
+        "label": "3. Dashboard",
+        "disabled": false,
+        "info": "Dashboard control nodes and visualisation widgets."
+    },
+    {
+        "id": "cfg_mongo",
+        "type": "mongodb3",
+        "z": "",
+        "uri": "mongodb://mongo:27017",
+        "name": "Smart Mobility MongoDB",
+        "options": "",
+        "parallelism": "-1"
+    },
+    {
+        "id": "cfg_ui_base",
+        "type": "ui_base",
+        "z": "",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0f4c81",
+                "baseColor": "#0f4c81",
+                "baseFont": "Georgia,Times New Roman,serif",
+                "edited": true,
+                "reset": false
+            },
+            "darkTheme": {
+                "default": "#1d3557",
+                "baseColor": "#1d3557",
+                "baseFont": "Georgia,Times New Roman,serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Smart Mobility",
+                "default": "#0f4c81",
+                "baseColor": "#0f4c81",
+                "baseFont": "Georgia,Times New Roman,serif",
+                "reset": false
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0f4c81",
+                    "value": "#0f4c81",
+                    "edited": true
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#f3f4f6",
+                    "edited": true
+                },
+                "page-backgroundColor": {
+                    "value": "#f3f4f6",
+                    "edited": true
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#e5e7eb",
+                    "edited": true
+                },
+                "group-textColor": {
+                    "value": "#1e3a5f",
+                    "edited": true
+                },
+                "group-borderColor": {
+                    "value": "#cbd5e1",
+                    "edited": true
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": true
+                },
+                "widget-textColor": {
+                    "value": "#0f172a",
+                    "edited": true
+                },
+                "widget-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": true
+                },
+                "widget-borderColor": {
+                    "value": "#d1d5db",
+                    "edited": true
+                },
+                "base-font": {
+                    "value": "Georgia,Times New Roman,serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "blue",
+                "accents": "cyan",
+                "warn": "red",
+                "background": "grey"
+            }
+        },
+        "site": {
+            "name": "Smart Mobility & Dynamic Parking Navigation System",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "true",
+            "allowTempTheme": "false",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "cfg_ui_tab",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Smart Mobility Dashboard",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "grp_controls",
+        "type": "ui_group",
+        "z": "",
+        "name": "Controls",
+        "tab": "cfg_ui_tab",
+        "disp": true,
+        "width": "24",
+        "collapse": false
+    },
+    {
+        "id": "grp_alerts",
+        "type": "ui_group",
+        "z": "",
+        "name": "Top Panel",
+        "tab": "cfg_ui_tab",
+        "disp": true,
+        "width": "24",
+        "collapse": false
+    },
+    {
+        "id": "grp_meter",
+        "type": "ui_group",
+        "z": "",
+        "name": "Roadside Prediction",
+        "tab": "cfg_ui_tab",
+        "disp": true,
+        "width": "8",
+        "collapse": false
+    },
+    {
+        "id": "grp_private",
+        "type": "ui_group",
+        "z": "",
+        "name": "Private Backup",
+        "tab": "cfg_ui_tab",
+        "disp": true,
+        "width": "16",
+        "collapse": false
+    },
+    {
+        "id": "grp_history",
+        "type": "ui_group",
+        "z": "",
+        "name": "Historical Trends",
+        "tab": "cfg_ui_tab",
+        "disp": true,
+        "width": "24",
+        "collapse": false
+    },
+    {
+        "id": "ui_theme_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_controls",
+        "name": "Dashboard Theme CSS",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n.nr-dashboard-theme md-content,\n.nr-dashboard-theme .nr-dashboard-cardcontainer {\n  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%) !important;\n}\n.nr-dashboard-theme .md-toolbar-tools,\n.nr-dashboard-theme md-toolbar {\n  background: linear-gradient(90deg, #f8fafc 0%, #eef4fb 100%) !important;\n  color: #143a63 !important;\n}\n.nr-dashboard-theme md-toolbar .md-toolbar-tools,\n.nr-dashboard-theme md-toolbar .md-toolbar-tools * {\n  color: #143a63 !important;\n  font-weight: 700 !important;\n}\n.nr-dashboard-theme .md-toolbar-tools h1,\n.nr-dashboard-theme .md-toolbar-tools .md-headline {\n  color: #143a63 !important;\n}\n.sm-hero {\n  padding: 18px 20px;\n  border-radius: 18px;\n  color: #f8fafc;\n  background:\n    radial-gradient(circle at top right, rgba(253, 186, 116, 0.35), transparent 32%),\n    linear-gradient(135deg, #0f172a 0%, #0f4c81 55%, #0f766e 100%);\n  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);\n}\n.sm-hero-grid {\n  display: grid;\n  grid-template-columns: minmax(0, 1.6fr) minmax(220px, 0.9fr);\n  gap: 18px;\n  align-items: start;\n}\n.sm-eyebrow {\n  font-size: 12px;\n  letter-spacing: 0.12em;\n  text-transform: uppercase;\n  color: rgba(15, 23, 42, 0.54);\n  font-weight: 700;\n}\n.sm-hero .sm-eyebrow {\n  color: rgba(248, 250, 252, 0.78);\n}\n.sm-hero-title {\n  margin-top: 8px;\n  font-size: 24px;\n  line-height: 1.1;\n  font-weight: 700;\n}\n.sm-hero-copy {\n  margin-top: 10px;\n  max-width: 760px;\n  font-size: 15px;\n  line-height: 1.5;\n  color: rgba(248, 250, 252, 0.95);\n}\n.sm-hero-subtitle {\n  margin-top: 8px;\n  font-size: 13px;\n  color: rgba(248, 250, 252, 0.82);\n}\n.sm-kpi-stack {\n  display: grid;\n  gap: 10px;\n}\n.sm-kpi {\n  border-radius: 14px;\n  padding: 12px 14px;\n  background: rgba(255, 255, 255, 0.13);\n  border: 1px solid rgba(255, 255, 255, 0.14);\n  backdrop-filter: blur(6px);\n}\n.sm-kpi-label,\n.sm-kpi-sub {\n  display: block;\n}\n.sm-kpi-label {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.12em;\n  color: rgba(248, 250, 252, 0.74);\n}\n.sm-kpi-value {\n  display: block;\n  margin-top: 6px;\n  font-size: 18px;\n  font-weight: 700;\n}\n.sm-kpi-sub {\n  margin-top: 4px;\n  font-size: 12px;\n  color: rgba(248, 250, 252, 0.85);\n}\n.sm-chip-row {\n  display: flex;\n  gap: 12px;\n  flex-wrap: wrap;\n  margin-top: 14px;\n}\n.sm-chip {\n  min-width: 180px;\n  padding: 8px 10px;\n  border-radius: 999px;\n  background: rgba(255, 255, 255, 0.16);\n  border: 1px solid rgba(255, 255, 255, 0.12);\n}\n.sm-chip strong,\n.sm-chip span {\n  display: block;\n}\n.sm-chip strong {\n  font-size: 11px;\n  letter-spacing: 0.1em;\n  text-transform: uppercase;\n  color: rgba(248, 250, 252, 0.74);\n}\n.sm-chip span {\n  margin-top: 4px;\n  font-size: 12px;\n  line-height: 1.4;\n}\n.sm-card {\n  padding: 12px 14px;\n  border-radius: 16px;\n  background: #ffffff;\n  border: 1px solid #dbe4ee;\n  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);\n}\n.nr-dashboard-theme .nr-dashboard-cardtitle {\n  padding: 12px 16px 6px !important;\n  font-size: 13px !important;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n  color: #64748b !important;\n  font-weight: 700 !important;\n}\n.nr-dashboard-theme md-card {\n  border-radius: 18px !important;\n  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08) !important;\n  border: 1px solid #dbe4ee !important;\n}\n.nr-dashboard-theme .nr-dashboard-template,\n.nr-dashboard-theme .nr-dashboard-text,\n.nr-dashboard-theme .nr-dashboard-gauge,\n.nr-dashboard-theme .nr-dashboard-chart {\n  background: transparent !important;\n}\n.nr-dashboard-theme .md-button {\n  border-radius: 14px !important;\n}\n.nr-dashboard-theme md-input-container,\n.nr-dashboard-theme md-select,\n.nr-dashboard-theme md-switch {\n  background: #ffffff !important;\n  border-radius: 14px !important;\n}\n.nr-dashboard-theme .nr-dashboard-dropdown,\n.nr-dashboard-theme .nr-dashboard-switch,\n.nr-dashboard-theme .nr-dashboard-button {\n  padding-top: 2px !important;\n  background: transparent !important;\n}\n.nr-dashboard-theme .nr-dashboard-dropdown,\n.nr-dashboard-theme .nr-dashboard-switch,\n.nr-dashboard-theme .nr-dashboard-button,\n.nr-dashboard-theme .nr-dashboard-textinput {\n  background: transparent !important;\n}\n.nr-dashboard-theme .nr-dashboard-textinput md-input-container,\n.nr-dashboard-theme .nr-dashboard-dropdown md-input-container,\n.nr-dashboard-theme .nr-dashboard-switch div,\n.nr-dashboard-theme .nr-dashboard-button button {\n  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;\n}\n.nr-dashboard-theme .nr-dashboard-textinput md-input-container,\n.nr-dashboard-theme .nr-dashboard-dropdown md-input-container {\n  margin: 0 !important;\n  padding: 8px 12px 2px !important;\n  background: #ffffff !important;\n  border: 1px solid #d8e2ee !important;\n  border-radius: 18px !important;\n}\n.nr-dashboard-theme .nr-dashboard-switch {\n  border-radius: 18px !important;\n  padding: 10px 14px !important;\n  background: #ffffff !important;\n  border: 1px solid #d8e2ee !important;\n  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;\n}\n.nr-dashboard-theme .nr-dashboard-button button {\n  min-height: 54px !important;\n}\n.sm-card-header {\n  display: flex;\n  gap: 12px;\n  align-items: flex-start;\n  justify-content: space-between;\n  margin-bottom: 10px;\n}\n.sm-title {\n  font-size: 18px;\n  color: #0f172a;\n  font-weight: 700;\n}\n.sm-muted {\n  font-size: 12px;\n  line-height: 1.4;\n  color: #475569;\n  max-width: 280px;\n}\n.sm-metric-row {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 10px;\n  margin-top: 12px;\n}\n.sm-metric {\n  padding: 10px 12px;\n  border-radius: 12px;\n  background: rgba(255, 255, 255, 0.12);\n}\n.sm-metric-label,\n.sm-metric-value {\n  display: block;\n}\n.sm-metric-label {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.1em;\n  opacity: 0.8;\n}\n.sm-metric-value {\n  margin-top: 4px;\n  font-size: 18px;\n  font-weight: 700;\n}\n.sm-table {\n  width: 100%;\n  border-collapse: collapse;\n}\n.sm-table th,\n.sm-table td {\n  padding: 8px 10px;\n  text-align: left;\n  border-bottom: 1px solid #e2e8f0;\n  font-size: 13px;\n}\n.sm-table th {\n  font-size: 11px;\n  text-transform: uppercase;\n  letter-spacing: 0.08em;\n  color: #64748b;\n}\n.sm-table tr:last-child td {\n  border-bottom: none;\n}\n.sm-table tbody tr td {\n  vertical-align: top;\n}\n.sm-badge {\n  display: inline-block;\n  padding: 5px 10px;\n  border-radius: 999px;\n  color: #ffffff;\n  font-size: 11px;\n  font-weight: 700;\n  letter-spacing: 0.08em;\n  text-transform: uppercase;\n}\n.sm-history-card .sm-muted {\n  text-align: right;\n}\n.sm-destination-card {\n  padding: 14px 16px;\n}\n.sm-destination-address {\n  font-size: 14px;\n  line-height: 1.45;\n  color: #334155;\n}\n.sm-destination-meta {\n  display: flex;\n  gap: 8px;\n  flex-wrap: wrap;\n  margin-top: 10px;\n}\n.sm-inline-chip {\n  display: inline-flex;\n  align-items: center;\n  padding: 6px 10px;\n  border-radius: 999px;\n  background: #eaf1f8;\n  color: #0f4c81;\n  font-size: 11px;\n  font-weight: 700;\n}\n.sm-map-link {\n  color: #0f4c81;\n  font-weight: 700;\n  text-decoration: none;\n  white-space: nowrap;\n}\n.sm-map-link:hover {\n  text-decoration: underline;\n}\n.nr-dashboard-theme .nr-dashboard-chart {\n  min-height: 300px !important;\n}\n.nr-dashboard-theme .nr-dashboard-template {\n  min-height: auto !important;\n}\n.sm-chart-note {\n  margin-top: 10px;\n  font-size: 13px;\n  color: #64748b;\n}\n@media (max-width: 900px) {\n  .sm-hero-grid {\n    grid-template-columns: 1fr;\n  }\n  .sm-card-header {\n    flex-direction: column;\n  }\n  .sm-history-card .sm-muted {\n    text-align: left;\n  }\n}\n</style>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "global",
+        "className": "",
+        "x": 180,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "inj_load_profiles",
+        "type": "inject",
+        "z": "tab_setup",
+        "name": "Initialise Presets",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0.5",
+        "x": 170,
+        "y": 80,
+        "wires": [
+            [
+                "fn_load_profiles"
+            ]
+        ]
+    },
+    {
+        "id": "fn_load_profiles",
+        "type": "function",
+        "z": "tab_setup",
+        "name": "Load Destination Profiles",
+        "func": "\nconst defaultProfile = {\n    id: \"ifc_central\",\n    name: \"IFC Mall\",\n    query: \"IFC Mall, Central\",\n    areaName: \"Central\",\n    district: \"Central and Western\",\n    address: \"8 Finance Street, Central, Hong Kong\",\n    latitude: 22.2840,\n    longitude: 114.1588,\n    radiusMeters: 1200,\n    trafficKeywords: [\"central\", \"admiralty\", \"harcourt\", \"ifc\", \"finance street\", \"connaught road\"]\n};\n\nglobal.set(\"defaultDestinationProfile\", defaultProfile);\nif (!global.get(\"selectedDestinationQuery\")) {\n    global.set(\"selectedDestinationQuery\", defaultProfile.query);\n}\nif (!global.get(\"selectedDestinationProfile\")) {\n    global.set(\"selectedDestinationProfile\", defaultProfile);\n}\nif (!global.get(\"parkingPreference\")) {\n    global.set(\"parkingPreference\", \"budget\");\n}\n\nmsg.payload = {\n    seedType: \"defaultDestinationProfile\",\n    version: \"v1\",\n    seededAt: new Date().toISOString(),\n    profile: defaultProfile\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 80,
+        "wires": [
+            [
+                "mongo_seed_profiles"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_seed_profiles",
+        "type": "mongodb3 in",
+        "z": "tab_setup",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Seed destination_profiles",
+        "collection": "destination_profiles",
+        "operation": "insert",
+        "x": 650,
+        "y": 80,
+        "wires": [
+            [
+                "dbg_seed_profiles"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_seed_profiles",
+        "type": "debug",
+        "z": "tab_setup",
+        "name": "Seed Result",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 900,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "inj_prime_dashboard",
+        "type": "inject",
+        "z": "tab_dashboard",
+        "name": "Prime Dashboard Defaults",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 180,
+        "y": 60,
+        "wires": [
+            [
+                "fn_prime_dashboard"
+            ]
+        ]
+    },
+    {
+        "id": "fn_prime_dashboard",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Prime Dashboard State",
+        "func": "\nconst defaultProfile = global.get(\"defaultDestinationProfile\") || {\n    query: \"IFC Mall, Central\"\n};\nglobal.set(\"selectedDestinationQuery\", defaultProfile.query);\nglobal.set(\"selectedDestinationProfile\", defaultProfile);\nglobal.set(\"parkingPreference\", \"budget\");\nreturn [\n    { payload: defaultProfile.query, topic: \"destination\" },\n    { payload: \"\", options: [] },\n    { payload: \"budget\", topic: \"preference\" },\n    { payload: \"refresh\", topic: \"refresh\" }\n];\n",
+        "outputs": 4,
+        "noerr": 0,
+        "x": 400,
+        "y": 60,
+        "wires": [
+            [
+                "ui_destination"
+            ],
+            [
+                "ui_search_result_selector"
+            ],
+            [
+                "ui_preference"
+            ],
+            [
+                "fn_build_geocode_request"
+            ]
+        ]
+    },
+    {
+        "id": "ui_destination",
+        "type": "ui_text_input",
+        "z": "tab_dashboard",
+        "name": "Destination Input",
+        "label": "Destination or building",
+        "tooltip": "",
+        "group": "grp_controls",
+        "order": 1,
+        "width": 12,
+        "height": 1,
+        "passthru": true,
+        "mode": "text",
+        "delay": "0",
+        "topic": "destination",
+        "sendOnBlur": true,
+        "className": "",
+        "x": 170,
+        "y": 140,
+        "wires": [
+            [
+                "fn_store_destination"
+            ]
+        ]
+    },
+    {
+        "id": "ui_search_result_selector",
+        "type": "ui_dropdown",
+        "z": "tab_dashboard",
+        "name": "Matched Locations",
+        "label": "Matched location",
+        "tooltip": "",
+        "place": "Choose the matched result",
+        "group": "grp_controls",
+        "order": 2,
+        "width": 12,
+        "height": 1,
+        "passthru": true,
+        "multiple": false,
+        "options": [],
+        "payload": "",
+        "topic": "selectedResultId",
+        "topicType": "str",
+        "className": "",
+        "x": 175,
+        "y": 180,
+        "wires": [
+            [
+                "fn_apply_selected_result"
+            ]
+        ]
+    },
+    {
+        "id": "fn_store_destination",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Store Destination Query",
+        "func": "\nconst defaultProfile = global.get(\"defaultDestinationProfile\") || { query: \"IFC Mall, Central\" };\nconst value = (msg.payload || defaultProfile.query).toString().trim();\nglobal.set(\"selectedDestinationQuery\", value || defaultProfile.query);\nmsg.payload = \"refresh\";\nmsg.topic = \"refresh\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 430,
+        "y": 140,
+        "wires": [
+            [
+                "fn_build_geocode_request"
+            ]
+        ]
+    },
+    {
+        "id": "fn_apply_selected_result",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Apply Selected Location",
+        "func": "\nconst fallback = global.get(\"defaultDestinationProfile\") || {};\nconst profiles = global.get(\"searchResultProfiles\") || [];\nconst selectedId = (msg.payload || \"\").toString();\nconst selected = profiles.find((item) => item.id === selectedId) || global.get(\"selectedDestinationProfile\") || fallback;\nglobal.set(\"selectedDestinationProfile\", selected);\nglobal.set(\"selectedDestinationQuery\", selected.query || selected.name || fallback.query || \"IFC Mall, Central\");\nmsg.payload = \"refresh\";\nmsg.topic = \"refresh\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 435,
+        "y": 180,
+        "wires": [
+            [
+                "lnk_run_analytics_out"
+            ]
+        ]
+    },
+    {
+        "id": "ui_preference",
+        "type": "ui_switch",
+        "z": "tab_dashboard",
+        "name": "Parking Preference",
+        "label": "Prefer sheltered indoor parking",
+        "tooltip": "",
+        "group": "grp_controls",
+        "order": 3,
+        "width": 7,
+        "height": 1,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "preference",
+        "style": "",
+        "onvalue": "sheltered",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "budget",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 170,
+        "y": 230,
+        "wires": [
+            [
+                "fn_store_preference"
+            ]
+        ]
+    },
+    {
+        "id": "fn_store_preference",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Store Preference",
+        "func": "\nconst value = (msg.payload || \"budget\").toString();\nglobal.set(\"parkingPreference\", value);\nmsg.payload = \"refresh\";\nmsg.topic = \"refresh\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 230,
+        "wires": [
+            [
+                "lnk_run_analytics_out"
+            ]
+        ]
+    },
+    {
+        "id": "ui_search_button",
+        "type": "ui_button",
+        "z": "tab_dashboard",
+        "name": "Find Matches",
+        "group": "grp_controls",
+        "order": 4,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Find matches",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#0f4c81",
+        "icon": "search",
+        "payload": "refresh",
+        "payloadType": "str",
+        "topic": "refresh",
+        "x": 150,
+        "y": 280,
+        "wires": [
+            [
+                "fn_build_refresh"
+            ]
+        ]
+    },
+    {
+        "id": "ui_refresh_button",
+        "type": "ui_button",
+        "z": "tab_dashboard",
+        "name": "Refresh Dashboard",
+        "group": "grp_controls",
+        "order": 5,
+        "width": 5,
+        "height": 1,
+        "passthru": false,
+        "label": "Refresh analysis",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#0f4c81",
+        "icon": "refresh",
+        "payload": "refresh",
+        "payloadType": "str",
+        "topic": "refresh",
+        "x": 150,
+        "y": 330,
+        "wires": [
+            [
+                "fn_build_refresh"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_refresh",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Build Refresh Trigger",
+        "func": "\nmsg.payload = \"refresh\";\nmsg.topic = \"refresh\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 305,
+        "wires": [
+            [
+                "fn_build_geocode_request"
+            ]
+        ]
+    },
+    {
+        "id": "inj_dashboard_timer",
+        "type": "inject",
+        "z": "tab_dashboard",
+        "name": "Periodic Dashboard Refresh",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "x": 170,
+        "y": 380,
+        "wires": [
+            [
+                "fn_build_refresh_timer"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_refresh_timer",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Timer Refresh Trigger",
+        "func": "\nmsg.payload = \"refresh\";\nmsg.topic = \"refresh\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420,
+        "y": 380,
+        "wires": [
+            [
+                "fn_build_geocode_request"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_geocode_request",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Build Geocode Request",
+        "func": "\nconst fallback = global.get(\"defaultDestinationProfile\") || { query: \"IFC Mall, Central\" };\nconst query = (global.get(\"selectedDestinationQuery\") || fallback.query || \"IFC Mall, Central\").toString().trim();\nmsg.url = `https://geodata.gov.hk/gs/api/v1.0.0/locationSearch?q=${encodeURIComponent(query)}&lang=en`;\nmsg.headers = {\n    \"User-Agent\": \"Mozilla/5.0\"\n};\nmsg.destinationQuery = query;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670,
+        "y": 250,
+        "wires": [
+            [
+                "http_destination_geocode"
+            ]
+        ]
+    },
+    {
+        "id": "http_destination_geocode",
+        "type": "http request",
+        "z": "tab_dashboard",
+        "name": "Geocode destination",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 900,
+        "y": 250,
+        "wires": [
+            [
+                "json_destination_geocode"
+            ]
+        ]
+    },
+    {
+        "id": "json_destination_geocode",
+        "type": "json",
+        "z": "tab_dashboard",
+        "name": "Parse geocode JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 1115,
+        "y": 250,
+        "wires": [
+            [
+                "fn_parse_geocode_result"
+            ]
+        ]
+    },
+    {
+        "id": "fn_parse_geocode_result",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Resolve User Destination",
+        "func": "\nfunction slugify(text) {\n    return String(text || \"\")\n        .toLowerCase()\n        .replace(/[^a-z0-9]+/g, \"_\")\n        .replace(/^_+|_+$/g, \"\");\n}\n\nfunction buildKeywords(...parts) {\n    const text = parts.filter(Boolean).join(\" \").toLowerCase();\n    return Array.from(new Set(text.split(/[^a-z0-9]+/).filter((item) => item && item.length > 2))).slice(0, 10);\n}\n\nfunction scoreResult(result, query) {\n    const haystack = [result.nameEN, result.addressEN, result.districtEN].filter(Boolean).join(\" \").toLowerCase();\n    const normalizedQuery = String(query || \"\").toLowerCase();\n    let score = 0;\n    if (haystack.includes(normalizedQuery)) {\n        score += 50;\n    }\n    const tokens = normalizedQuery.split(/[^a-z0-9]+/).filter((item) => item && item.length > 1);\n    for (const token of tokens) {\n        if (String(result.nameEN || \"\").toLowerCase().includes(token)) {\n            score += 12;\n        }\n        if (String(result.addressEN || \"\").toLowerCase().includes(token)) {\n            score += 5;\n        }\n        if (String(result.districtEN || \"\").toLowerCase().includes(token)) {\n            score += 2;\n        }\n    }\n    return score;\n}\n\nconst fallback = global.get(\"defaultDestinationProfile\") || {\n    id: \"ifc_central\",\n    name: \"IFC Mall\",\n    query: \"IFC Mall, Central\",\n    areaName: \"Central\",\n    district: \"Central and Western\",\n    address: \"8 Finance Street, Central, Hong Kong\",\n    latitude: 22.2840,\n    longitude: 114.1588,\n    radiusMeters: 1200,\n    trafficKeywords: [\"central\", \"admiralty\", \"harcourt\", \"ifc\", \"finance street\", \"connaught road\"]\n};\n\nconst query = (msg.destinationQuery || global.get(\"selectedDestinationQuery\") || fallback.query).toString().trim();\nconst results = Array.isArray(msg.payload) ? msg.payload : [];\nconst proj4 = global.get(\"proj4\");\n\nlet selectedProfile = global.get(\"selectedDestinationProfile\") || fallback;\n\nconst profiles = [];\nif (results.length && proj4) {\n    proj4.defs(\"EPSG:2326\", \"+proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +towgs84=-162.619,-276.959,-161.764,-1.719,0.067,1.092,1.27 +units=m +no_defs +type=crs\");\n    const ranked = results.slice().sort((a, b) => scoreResult(b, query) - scoreResult(a, query)).slice(0, 8);\n    for (const item of ranked) {\n        const converted = proj4(\"EPSG:2326\", \"EPSG:4326\", [Number(item.x), Number(item.y)]);\n        const longitude = Array.isArray(converted) ? Number(converted[0]) : fallback.longitude;\n        const latitude = Array.isArray(converted) ? Number(converted[1]) : fallback.latitude;\n        profiles.push({\n            id: slugify(`${item.nameEN || query}_${item.addressEN || item.districtEN || \"\"}`) || \"custom_destination\",\n            name: item.nameEN || query,\n            query,\n            areaName: (item.districtEN || fallback.areaName || \"Hong Kong\").replace(/ District$/i, \"\"),\n            district: item.districtEN || fallback.district,\n            address: item.addressEN || query,\n            latitude: Number.isFinite(latitude) ? latitude : fallback.latitude,\n            longitude: Number.isFinite(longitude) ? longitude : fallback.longitude,\n            radiusMeters: 1200,\n            trafficKeywords: buildKeywords(query, item.nameEN, item.addressEN, item.districtEN)\n        });\n    }\n}\n\nif (!profiles.length) {\n    profiles.push(selectedProfile);\n}\n\nselectedProfile = profiles[0];\nglobal.set(\"selectedDestinationQuery\", query);\nglobal.set(\"selectedDestinationProfile\", selectedProfile);\nglobal.set(\"searchResultProfiles\", profiles);\n\nconst dropdownOptions = profiles.map((item) => ({\n    label: `${item.name} \u00b7 ${item.address || item.areaName}`,\n    value: item.id,\n    type: \"str\"\n}));\n\nreturn [\n    {\n        options: dropdownOptions,\n        payload: selectedProfile.id\n    },\n    {\n        payload: selectedProfile.id,\n        topic: \"selectedResultId\"\n    }\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 1350,
+        "y": 250,
+        "wires": [
+            [
+                "ui_search_result_selector"
+            ],
+            [
+                "fn_apply_selected_result"
+            ]
+        ]
+    },
+    {
+        "id": "lnk_run_analytics_out",
+        "type": "link out",
+        "z": "tab_dashboard",
+        "name": "Run Analytics",
+        "mode": "link",
+        "links": [
+            "lnk_run_analytics_in"
+        ],
+        "x": 655,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "lnk_dashboard_package_in",
+        "type": "link in",
+        "z": "tab_dashboard",
+        "name": "Dashboard Package In",
+        "links": [
+            "lnk_dashboard_package_out"
+        ],
+        "x": 145,
+        "y": 420,
+        "wires": [
+            [
+                "fn_prepare_widgets"
+            ]
+        ]
+    },
+    {
+        "id": "fn_prepare_widgets",
+        "type": "function",
+        "z": "tab_dashboard",
+        "name": "Prepare Widget Messages",
+        "func": "\nconst widgets = msg.payload.widgets || {};\nreturn [\n    { payload: widgets.topHtml || \"\" },\n    { payload: widgets.mapHtml || \"\" },\n    { payload: widgets.gaugePercent || 0 },\n    { payload: widgets.meterSummary || \"\" },\n    { payload: widgets.depletionText || \"\" },\n    { payload: widgets.riskHtml || \"\" },\n    { payload: widgets.backupTableHtml || \"\" },\n    { payload: widgets.backupInsightHtml || \"\" },\n    { payload: widgets.todayVsYesterdayChart || [] },\n    { payload: widgets.weeklyPatternChart || [] },\n    { payload: widgets.hotspotHtml || \"\" }\n];\n",
+        "outputs": 11,
+        "noerr": 0,
+        "x": 380,
+        "y": 420,
+        "wires": [
+            [
+                "ui_top_template"
+            ],
+            [
+                "ui_map_template"
+            ],
+            [
+                "ui_meter_gauge"
+            ],
+            [
+                "ui_meter_summary"
+            ],
+            [
+                "ui_meter_depletion"
+            ],
+            [
+                "ui_risk_template"
+            ],
+            [
+                "ui_backup_template"
+            ],
+            [
+                "ui_backup_insight_template"
+            ],
+            [
+                "ui_chart_today_vs_yesterday"
+            ],
+            [
+                "ui_chart_weekly_pattern"
+            ],
+            [
+                "ui_hotspot_template"
+            ]
+        ]
+    },
+    {
+        "id": "ui_map_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_controls",
+        "name": "Destination Map Card",
+        "order": 4,
+        "width": 24,
+        "height": 3,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 680,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_top_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_alerts",
+        "name": "Top Advisory Card",
+        "order": 1,
+        "width": 24,
+        "height": 5,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 680,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_meter_gauge",
+        "type": "ui_gauge",
+        "z": "tab_dashboard",
+        "name": "Roadside Availability Gauge",
+        "group": "grp_meter",
+        "order": 1,
+        "width": 8,
+        "height": 3,
+        "gtype": "gage",
+        "title": "Nearby Roadside Availability",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#b91c1c",
+            "#d97706",
+            "#15803d"
+        ],
+        "seg1": "35",
+        "seg2": "70",
+        "className": "",
+        "x": 700,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "ui_meter_summary",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_meter",
+        "name": "Roadside Summary Card",
+        "order": 2,
+        "width": 8,
+        "height": 3,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_meter_depletion",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_meter",
+        "name": "Depletion Countdown Card",
+        "order": 3,
+        "width": 8,
+        "height": 3,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 695,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_risk_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_meter",
+        "name": "Roadside Risk Badge",
+        "order": 4,
+        "width": 8,
+        "height": 3,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 680,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_backup_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_private",
+        "name": "Private Backup Table",
+        "order": 1,
+        "width": 16,
+        "height": 6,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 685,
+        "y": 580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_backup_insight_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_private",
+        "name": "Backup Insight Card",
+        "order": 2,
+        "width": 16,
+        "height": 4,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_chart_today_vs_yesterday",
+        "type": "ui_chart",
+        "z": "tab_dashboard",
+        "name": "Today vs Yesterday",
+        "group": "grp_history",
+        "order": 1,
+        "width": 12,
+        "height": 4,
+        "label": "Today vs Yesterday Nearby Availability",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "Recent history is still being collected. The chart will switch to richer comparisons as more snapshots accumulate.",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1d4ed8",
+            "#94a3b8",
+            "#f59e0b",
+            "#16a34a"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 700,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_chart_weekly_pattern",
+        "type": "ui_chart",
+        "z": "tab_dashboard",
+        "name": "Weekly Average Pattern",
+        "group": "grp_history",
+        "order": 2,
+        "width": 12,
+        "height": 4,
+        "label": "Collected History Pattern",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm",
+        "interpolate": "linear",
+        "nodata": "The history panel will strengthen automatically as the Docker flow collects more days of snapshots.",
+        "dot": true,
+        "ymin": "0",
+        "ymax": "",
+        "removeOlder": "24",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#0f766e",
+            "#9333ea",
+            "#dc2626",
+            "#f97316"
+        ],
+        "useOldStyle": false,
+        "outputs": 1,
+        "x": 690,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui_hotspot_template",
+        "type": "ui_template",
+        "z": "tab_dashboard",
+        "group": "grp_history",
+        "name": "Historical Hotspots",
+        "order": 3,
+        "width": 24,
+        "height": 4,
+        "format": "<div ng-bind-html=\"msg.payload\"></div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 690,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "lnk_run_analytics_in",
+        "type": "link in",
+        "z": "tab_analytics",
+        "name": "Analytics Trigger In",
+        "links": [
+            "lnk_run_analytics_out"
+        ],
+        "x": 140,
+        "y": 80,
+        "wires": [
+            [
+                "fn_build_meter_query",
+                "fn_build_private_query",
+                "fn_build_traffic_query",
+                "fn_build_weather_query"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_meter_query",
+        "type": "function",
+        "z": "tab_analytics",
+        "name": "Build Meter Query",
+        "func": "\nmsg.payload = {};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 40,
+        "wires": [
+            [
+                "mongo_get_meter_docs"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_private_query",
+        "type": "function",
+        "z": "tab_analytics",
+        "name": "Build Private Query",
+        "func": "\nmsg.payload = {};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 90,
+        "wires": [
+            [
+                "mongo_get_private_docs"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_traffic_query",
+        "type": "function",
+        "z": "tab_analytics",
+        "name": "Build Traffic Query",
+        "func": "\nmsg.payload = {};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 140,
+        "wires": [
+            [
+                "mongo_get_traffic_docs"
+            ]
+        ]
+    },
+    {
+        "id": "fn_build_weather_query",
+        "type": "function",
+        "z": "tab_analytics",
+        "name": "Build Weather Query",
+        "func": "\nmsg.payload = {};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 190,
+        "wires": [
+            [
+                "mongo_get_weather_docs"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_get_meter_docs",
+        "type": "mongodb3 in",
+        "z": "tab_analytics",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Load parking_meter_snapshots",
+        "collection": "parking_meter_snapshots",
+        "operation": "find.toArray",
+        "x": 650,
+        "y": 40,
+        "wires": [
+            [
+                "chg_meter_topic"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_get_private_docs",
+        "type": "mongodb3 in",
+        "z": "tab_analytics",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Load private_carpark_snapshots",
+        "collection": "private_carpark_snapshots",
+        "operation": "find.toArray",
+        "x": 660,
+        "y": 90,
+        "wires": [
+            [
+                "chg_private_topic"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_get_traffic_docs",
+        "type": "mongodb3 in",
+        "z": "tab_analytics",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Load traffic_snapshots",
+        "collection": "traffic_snapshots",
+        "operation": "find.toArray",
+        "x": 640,
+        "y": 140,
+        "wires": [
+            [
+                "chg_traffic_topic"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_get_weather_docs",
+        "type": "mongodb3 in",
+        "z": "tab_analytics",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Load weather_snapshots",
+        "collection": "weather_snapshots",
+        "operation": "find.toArray",
+        "x": 645,
+        "y": 190,
+        "wires": [
+            [
+                "chg_weather_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_meter_topic",
+        "type": "change",
+        "z": "tab_analytics",
+        "name": "Topic meterDocs",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "meterDocs",
+                "tot": "str"
+            }
+        ],
+        "x": 900,
+        "y": 40,
+        "wires": [
+            [
+                "join_analytics_inputs"
+            ]
+        ]
+    },
+    {
+        "id": "chg_private_topic",
+        "type": "change",
+        "z": "tab_analytics",
+        "name": "Topic privateDocs",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "privateDocs",
+                "tot": "str"
+            }
+        ],
+        "x": 900,
+        "y": 90,
+        "wires": [
+            [
+                "join_analytics_inputs"
+            ]
+        ]
+    },
+    {
+        "id": "chg_traffic_topic",
+        "type": "change",
+        "z": "tab_analytics",
+        "name": "Topic trafficDocs",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "trafficDocs",
+                "tot": "str"
+            }
+        ],
+        "x": 900,
+        "y": 140,
+        "wires": [
+            [
+                "join_analytics_inputs"
+            ]
+        ]
+    },
+    {
+        "id": "chg_weather_topic",
+        "type": "change",
+        "z": "tab_analytics",
+        "name": "Topic weatherDocs",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "weatherDocs",
+                "tot": "str"
+            }
+        ],
+        "x": 900,
+        "y": 190,
+        "wires": [
+            [
+                "join_analytics_inputs"
+            ]
+        ]
+    },
+    {
+        "id": "join_analytics_inputs",
+        "type": "join",
+        "z": "tab_analytics",
+        "name": "Collect analytics inputs",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "3",
+        "count": "4",
+        "reduceRight": false,
+        "x": 1180,
+        "y": 120,
+        "wires": [
+            [
+                "fn_compute_package"
+            ]
+        ]
+    },
+    {
+        "id": "fn_compute_package",
+        "type": "function",
+        "z": "tab_analytics",
+        "name": "Compute Recommendation Package",
+        "func": "\nfunction getProfiles() {\n    return global.get(\"defaultDestinationProfile\") || {\n        id: \"ifc_central\",\n        name: \"IFC Mall\",\n        query: \"IFC Mall, Central\",\n        areaName: \"Central\",\n        district: \"Central and Western\",\n        address: \"8 Finance Street, Central, Hong Kong\",\n        latitude: 22.2840,\n        longitude: 114.1588,\n        radiusMeters: 1200,\n        trafficKeywords: [\"central\", \"admiralty\", \"harcourt\", \"ifc\", \"finance street\", \"connaught road\"]\n    };\n}\n\nfunction parseIso(value) {\n    const time = Date.parse(value);\n    return Number.isFinite(time) ? time : 0;\n}\n\nfunction sortDocs(docs) {\n    let list;\n    if (Array.isArray(docs)) {\n        list = docs.slice();\n    } else if (docs && typeof docs === \"object\" && Object.prototype.hasOwnProperty.call(docs, \"snapshotTime\")) {\n        list = [docs];\n    } else {\n        list = Object.values(docs || {});\n    }\n    return list.sort((a, b) => parseIso(a.snapshotTime) - parseIso(b.snapshotTime));\n}\n\nfunction latestDoc(docs) {\n    const sorted = sortDocs(docs);\n    return sorted.length ? sorted[sorted.length - 1] : null;\n}\n\nfunction docBefore(docs, targetTs) {\n    const sorted = sortDocs(docs);\n    let candidate = null;\n    for (const item of sorted) {\n        if (parseIso(item.snapshotTime) <= targetTs) {\n            candidate = item;\n        }\n    }\n    return candidate || (sorted.length ? sorted[0] : null);\n}\n\nfunction toNumber(value) {\n    if (value === undefined || value === null || value === \"\") {\n        return null;\n    }\n    const parsed = Number(value);\n    return Number.isFinite(parsed) ? parsed : null;\n}\n\nfunction haversine(lat1, lon1, lat2, lon2) {\n    if ([lat1, lon1, lat2, lon2].some((value) => value === null || value === undefined)) {\n        return null;\n    }\n    const toRad = (deg) => deg * Math.PI / 180;\n    const R = 6371000;\n    const dLat = toRad(lat2 - lat1);\n    const dLon = toRad(lon2 - lon1);\n    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +\n        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *\n        Math.sin(dLon / 2) * Math.sin(dLon / 2);\n    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));\n    return R * c;\n}\n\nfunction candidateFilter(records, profile, sourceType) {\n    const valid = (records || []).map((record) => {\n        const distance = haversine(profile.latitude, profile.longitude, record.latitude, record.longitude);\n        return Object.assign({}, record, { distanceMeters: distance });\n    }).filter((record) => {\n        if (record.distanceMeters !== null && record.distanceMeters <= profile.radiusMeters) {\n            return true;\n        }\n        return String(record.district || \"\").toLowerCase().includes(String(profile.district || \"\").toLowerCase());\n    });\n\n    valid.sort((a, b) => {\n        const aDist = a.distanceMeters === null ? Number.MAX_SAFE_INTEGER : a.distanceMeters;\n        const bDist = b.distanceMeters === null ? Number.MAX_SAFE_INTEGER : b.distanceMeters;\n        return aDist - bDist;\n    });\n\n    const filtered = sourceType === \"private\" ? valid.filter((item) => item.sourceType === \"private\" || item.isCovered) : valid;\n    return filtered.slice(0, 6);\n}\n\nfunction buildRecordMap(doc) {\n    const map = {};\n    const rows = doc && Array.isArray(doc.records) ? doc.records : [];\n    rows.forEach((item) => {\n        map[item.facilityId] = item;\n    });\n    return map;\n}\n\nfunction deriveTraffic(profile, trafficDoc) {\n    const records = trafficDoc && Array.isArray(trafficDoc.records) ? trafficDoc.records : [];\n    if (!records.length) {\n        return { travelEstimateMinutes: 12, congestionLabel: \"Moderate\", supportingLabel: \"No live traffic record matched the selected destination.\" };\n    }\n    let best = null;\n    let bestScore = -1;\n    for (const record of records) {\n        const text = String(record.label || \"\").toLowerCase();\n        const keywordScore = profile.trafficKeywords.reduce((score, keyword) => score + (text.includes(keyword) ? 2 : 0), 0);\n        const congestionScore = record.congestionFactor ? Math.min(record.congestionFactor * 2, 4) : 0;\n        const score = keywordScore + congestionScore;\n        if (score > bestScore) {\n            bestScore = score;\n            best = record;\n        }\n    }\n    const minutes = best && best.currentMinutes ? best.currentMinutes : 12;\n    const factor = best && best.congestionFactor ? best.congestionFactor : 1;\n    const congestionLabel = factor >= 1.8 ? \"Heavy\" : factor >= 1.3 ? \"Moderate\" : \"Light\";\n    return {\n        travelEstimateMinutes: minutes,\n        congestionLabel,\n        supportingLabel: best ? best.label : \"Fallback travel estimate\"\n    };\n}\n\nfunction deriveWeather(weatherDoc) {\n    if (!weatherDoc) {\n        return {\n            isRaining: false,\n            weatherSummary: \"Weather data unavailable\",\n            rainfallSummary: \"No rainfall snapshot available\",\n            temperatureText: \"N/A\"\n        };\n    }\n    const temperatureText = weatherDoc.temperatureCelsius !== null && weatherDoc.temperatureCelsius !== undefined ? `${weatherDoc.temperatureCelsius} C` : \"N/A\";\n    const rainfallSummary = weatherDoc.isRaining ?\n        `Rain detected, peak hourly rainfall ${weatherDoc.maxRainfall || 0} mm.` :\n        \"No significant rainfall detected.\";\n    const weatherSummary = weatherDoc.isRaining ? \"Wet conditions\" : \"Dry conditions\";\n    return {\n        isRaining: !!weatherDoc.isRaining,\n        weatherSummary,\n        rainfallSummary,\n        temperatureText\n    };\n}\n\nfunction safeRatio(available, total) {\n    if (available === null || available === undefined) {\n        return 0;\n    }\n    if (!total || total <= 0) {\n        return Math.min(available / 20, 1);\n    }\n    return Math.max(0, Math.min(available / total, 1));\n}\n\nfunction depletionInfo(current, baseline) {\n    const currentAvailable = toNumber(current && current.availableSpaces) || 0;\n    const baselineAvailable = toNumber(baseline && baseline.availableSpaces);\n    if (baselineAvailable === null || baselineAvailable === undefined) {\n        return {\n            deltaSpaces: null,\n            ratePerMinute: 0,\n            minutesToFull: null,\n            label: \"Insufficient history\"\n        };\n    }\n    const consumed = baselineAvailable - currentAvailable;\n    const ratePerMinute = consumed / 15;\n    if (ratePerMinute > 0.05 && currentAvailable > 0) {\n        const minutesToFull = currentAvailable / ratePerMinute;\n        const label = minutesToFull <= 10 ? \"Critical\" : minutesToFull <= 20 ? \"Warning\" : \"Watch\";\n        return {\n            deltaSpaces: consumed,\n            ratePerMinute,\n            minutesToFull,\n            label\n        };\n    }\n    return {\n        deltaSpaces: consumed,\n        ratePerMinute: Math.max(ratePerMinute, 0),\n        minutesToFull: null,\n        label: consumed <= 0 ? \"Stable or improving\" : \"Low depletion risk\"\n    };\n}\n\nfunction scoreCandidate(candidate, baseline, context) {\n    const ratio = safeRatio(candidate.availableSpaces, candidate.totalSpaces);\n    const depletion = depletionInfo(candidate, baseline);\n    let score = ratio * 50;\n    score += Math.min(toNumber(candidate.availableSpaces) || 0, 25);\n    if (candidate.distanceMeters !== null) {\n        score += Math.max(0, 15 - (candidate.distanceMeters / 100));\n    }\n    if (depletion.minutesToFull !== null) {\n        score -= Math.max(0, 25 - Math.min(depletion.minutesToFull, 25));\n        if (context.travelEstimateMinutes > depletion.minutesToFull) {\n            score -= 35;\n        }\n    }\n    if (context.isRaining) {\n        score += candidate.isCovered ? 14 : -20;\n    } else if (candidate.sourceType === \"meter\") {\n        score += 6;\n    }\n    if (context.preference === \"sheltered\") {\n        score += candidate.isCovered ? 10 : -8;\n    } else if (context.preference === \"budget\") {\n        score += candidate.sourceType === \"meter\" ? 8 : 0;\n    }\n    const arrivalUnsafe = depletion.minutesToFull !== null && context.travelEstimateMinutes > depletion.minutesToFull;\n    const riskText = arrivalUnsafe ? \"Likely full before arrival\" : depletion.label;\n    return {\n        candidate,\n        depletion,\n        score,\n        arrivalUnsafe,\n        ratio,\n        riskText\n    };\n}\n\nfunction formatMinutes(value) {\n    if (value === null || value === undefined || !Number.isFinite(value)) {\n        return \"N/A\";\n    }\n    return `${Math.max(1, Math.round(value))} min`;\n}\n\nfunction aggregateNearbyAvailability(doc, profile) {\n    const rows = candidateFilter(doc && doc.records, profile, \"meter\");\n    return rows.reduce((sum, item) => sum + (toNumber(item.availableSpaces) || 0), 0);\n}\n\nfunction nearestAvailableByDistance(records, profile, sourceType) {\n    const rows = candidateFilter(records, profile, sourceType);\n    return rows.find((item) => (toNumber(item.availableSpaces) || 0) > 0) || rows[0] || null;\n}\n\nfunction seriesForDay(docs, profile, dateOffsetDays) {\n    const now = new Date();\n    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dateOffsetDays, 0, 0, 0, 0);\n    const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);\n    return sortDocs(docs)\n        .filter((doc) => {\n            const ts = parseIso(doc.snapshotTime);\n            return ts >= start.getTime() && ts < end.getTime();\n        })\n        .map((doc) => {\n            const rows = candidateFilter(doc.records || [], profile, \"meter\");\n            const total = rows.reduce((sum, item) => sum + (toNumber(item.availableSpaces) || 0), 0);\n            return { x: new Date(parseIso(doc.snapshotTime)), y: total };\n        });\n}\n\nfunction recentWindowSeries(docs, profile, hours, offsetHours) {\n    const end = Date.now() - ((offsetHours || 0) * 60 * 60 * 1000);\n    const start = end - (hours * 60 * 60 * 1000);\n    return sortDocs(docs)\n        .filter((doc) => {\n            const ts = parseIso(doc.snapshotTime);\n            return ts >= start && ts <= end;\n        })\n        .map((doc) => ({\n            x: new Date(parseIso(doc.snapshotTime)),\n            y: aggregateNearbyAvailability(doc, profile)\n        }));\n}\n\nfunction weeklyAverageSeries(docs, profile) {\n    const buckets = {};\n    sortDocs(docs).forEach((doc) => {\n        const rows = candidateFilter(doc.records || [], profile, \"meter\");\n        const total = rows.reduce((sum, item) => sum + (toNumber(item.availableSpaces) || 0), 0);\n        const date = new Date(parseIso(doc.snapshotTime));\n        const hour = date.getHours();\n        if (!buckets[hour]) {\n            buckets[hour] = { sum: 0, count: 0 };\n        }\n        buckets[hour].sum += total;\n        buckets[hour].count += 1;\n    });\n    const baseDate = new Date();\n    const series = [];\n    for (let hour = 0; hour < 24; hour += 1) {\n        const bucket = buckets[hour] || { sum: 0, count: 0 };\n        const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate(), hour, 0, 0, 0);\n        series.push({\n            x: date,\n            y: bucket.count ? Number((bucket.sum / bucket.count).toFixed(2)) : 0\n        });\n    }\n    return series;\n}\n\nfunction hotspotTable(docs, profile, historyDescriptor) {\n    const buckets = {};\n    sortDocs(docs).forEach((doc) => {\n        const rows = candidateFilter(doc.records || [], profile, \"meter\");\n        const totalAvailable = rows.reduce((sum, item) => sum + (toNumber(item.availableSpaces) || 0), 0);\n        const totalCapacity = rows.reduce((sum, item) => sum + (toNumber(item.totalSpaces) || 0), 0);\n        const date = new Date(parseIso(doc.snapshotTime));\n        const hour = date.getHours();\n        if (!buckets[hour]) {\n            buckets[hour] = { ratioSum: 0, count: 0 };\n        }\n        buckets[hour].ratioSum += totalCapacity > 0 ? totalAvailable / totalCapacity : totalAvailable / 20;\n        buckets[hour].count += 1;\n    });\n    const rows = Object.keys(buckets).map((hour) => {\n        const bucket = buckets[hour];\n        const ratio = bucket.count ? bucket.ratioSum / bucket.count : 0;\n        return {\n            hour: Number(hour),\n            ratio\n        };\n    }).sort((a, b) => a.ratio - b.ratio).slice(0, 3);\n\n    const htmlRows = rows.map((row) => {\n        const color = row.ratio < 0.2 ? \"#b91c1c\" : row.ratio < 0.4 ? \"#c2410c\" : \"#0f766e\";\n        const label = `${String(row.hour).padStart(2, \"0\")}:00 - ${String((row.hour + 1) % 24).padStart(2, \"0\")}:00`;\n        const badge = row.ratio < 0.2 ? \"Severe\" : row.ratio < 0.4 ? \"Busy\" : \"Manageable\";\n        return `<tr><td>${label}</td><td><span class=\"sm-badge\" style=\"background:${color};\">${badge}</span></td><td style=\"color:${color};font-weight:700;\">${Math.round(row.ratio * 100)}%</td></tr>`;\n    }).join(\"\");\n\n    return `<div class=\"sm-card sm-history-card\"><div class=\"sm-card-header\"><div><div class=\"sm-eyebrow\">Historical Heatmap-Style View</div><div class=\"sm-title\">Congestion hotspots</div></div><div class=\"sm-muted\">${historyDescriptor}</div></div><table class=\"sm-table\"><thead><tr><th>Time window</th><th>Severity</th><th>Average availability</th></tr></thead><tbody>${htmlRows || '<tr><td colspan=\"3\">No historical data available yet.</td></tr>'}</tbody></table></div>`;\n}\n\nconst selectedDestination = global.get(\"selectedDestinationQuery\") || \"IFC Mall, Central\";\nconst preference = global.get(\"parkingPreference\") || \"budget\";\nconst profile = global.get(\"selectedDestinationProfile\") || getProfiles();\n\nconst cutoffTs = Date.now() - (7 * 24 * 60 * 60 * 1000);\nconst withinWindow = (doc) => parseIso(doc && doc.snapshotTime) >= cutoffTs;\nconst meterDocs = sortDocs(msg.payload.meterDocs).filter(withinWindow);\nconst privateDocs = sortDocs(msg.payload.privateDocs).filter(withinWindow);\nconst trafficDocs = sortDocs(msg.payload.trafficDocs).filter(withinWindow);\nconst weatherDocs = sortDocs(msg.payload.weatherDocs).filter(withinWindow);\n\nconst latestMeterDoc = latestDoc(meterDocs);\nconst latestPrivateDoc = latestDoc(privateDocs);\nconst latestTrafficDoc = latestDoc(trafficDocs);\nconst latestWeatherDoc = latestDoc(weatherDocs);\nconst latestTimestamp = Math.max(parseIso(latestMeterDoc && latestMeterDoc.snapshotTime), parseIso(latestPrivateDoc && latestPrivateDoc.snapshotTime), parseIso(latestTrafficDoc && latestTrafficDoc.snapshotTime), parseIso(latestWeatherDoc && latestWeatherDoc.snapshotTime));\nconst baselineTarget = latestTimestamp - (15 * 60 * 1000);\nconst baselineMeterDoc = docBefore(meterDocs, baselineTarget);\nconst baselinePrivateDoc = docBefore(privateDocs, baselineTarget);\nconst meterBaselineMap = buildRecordMap(baselineMeterDoc);\nconst privateBaselineMap = buildRecordMap(baselinePrivateDoc);\n\nconst traffic = deriveTraffic(profile, latestTrafficDoc);\nconst weather = deriveWeather(latestWeatherDoc);\n\nconst meterCandidates = candidateFilter(latestMeterDoc && latestMeterDoc.records, profile, \"meter\")\n    .slice(0, 6)\n    .map((item) => scoreCandidate(item, meterBaselineMap[item.facilityId], {\n        travelEstimateMinutes: traffic.travelEstimateMinutes,\n        isRaining: weather.isRaining,\n        preference\n    }));\n\nconst privateCandidates = candidateFilter(latestPrivateDoc && latestPrivateDoc.records, profile, \"private\")\n    .slice(0, 6)\n    .map((item) => scoreCandidate(item, privateBaselineMap[item.facilityId], {\n        travelEstimateMinutes: traffic.travelEstimateMinutes,\n        isRaining: weather.isRaining,\n        preference\n    }));\n\nconst meterCandidatesSorted = meterCandidates.slice().sort((a, b) => b.score - a.score);\nconst privateCandidatesSorted = privateCandidates.slice().sort((a, b) => b.score - a.score);\nconst nearestAvailableRoadsideRaw = nearestAvailableByDistance(latestMeterDoc && latestMeterDoc.records, profile, \"meter\");\nconst preferredRoadside = (nearestAvailableRoadsideRaw && meterCandidatesSorted.find((item) => item.candidate.facilityId === nearestAvailableRoadsideRaw.facilityId)) || meterCandidatesSorted.find((item) => (toNumber(item.candidate.availableSpaces) || 0) > 0) || meterCandidatesSorted[0] || null;\nconst preferredIndoor = privateCandidatesSorted.find((item) => (toNumber(item.candidate.availableSpaces) || 0) > 0) || privateCandidatesSorted[0] || null;\nconst allCandidates = meterCandidates.concat(privateCandidates)\n    .sort((a, b) => {\n        const aAvailable = toNumber(a.candidate.availableSpaces) || 0;\n        const bAvailable = toNumber(b.candidate.availableSpaces) || 0;\n        if ((aAvailable > 0) !== (bAvailable > 0)) {\n            return aAvailable > 0 ? -1 : 1;\n        }\n        return b.score - a.score;\n    });\nconst primary = allCandidates[0] || null;\nconst backupIndoor = preferredIndoor;\nconst bestRoadside = preferredRoadside;\n\nconst staleThresholdMinutes = 20;\nconst staleMinutes = latestTimestamp ? Math.round((Date.now() - latestTimestamp) / 60000) : 999;\nconst staleWarning = staleMinutes > staleThresholdMinutes ? `Cached data in use. Latest snapshot is ${staleMinutes} minutes old.` : \"Live data refreshed within the expected polling window.\";\n\nconst recommendationSentence = primary ?\n    `Recommended option: ${primary.candidate.facilityName}. Estimated drive time is ${formatMinutes(traffic.travelEstimateMinutes)}. ${weather.isRaining ? \"Rainfall is present, so covered parking is prioritised.\" : \"Dry weather keeps roadside parking competitive.\"} ${primary.arrivalUnsafe ? \"The current option still carries a before-arrival depletion risk.\" : \"Predicted availability remains acceptable on arrival.\"}` :\n    \"No parking recommendation can be produced yet because the historical cache is still empty.\";\n\nconst osmDirectUrl = `https://www.openstreetmap.org/?mlat=${profile.latitude}&mlon=${profile.longitude}#map=17/${profile.latitude}/${profile.longitude}`;\nconst mapHtml = `<div class=\"sm-card sm-destination-card\"><div class=\"sm-card-header\"><div><div class=\"sm-eyebrow\">Selected destination</div><div class=\"sm-title\">${profile.name}</div></div><a class=\"sm-map-link\" href=\"${osmDirectUrl}\" target=\"_blank\" rel=\"noopener noreferrer\">Open map</a></div><div class=\"sm-destination-address\">${profile.address || profile.query || profile.areaName || \"\"}</div><div class=\"sm-destination-meta\"><span class=\"sm-inline-chip\">${profile.areaName || \"Hong Kong\"}</span><span class=\"sm-inline-chip\">${profile.district || \"Unknown district\"}</span><span class=\"sm-inline-chip\">${profile.latitude.toFixed(4)}, ${profile.longitude.toFixed(4)}</span></div></div>`;\n\nconst primaryType = primary ? (primary.candidate.isCovered ? \"Covered backup\" : \"Roadside meter\") : \"Pending\";\nconst topHtml = `<div class=\"sm-hero\">\n<div class=\"sm-hero-grid\">\n<div>\n<div class=\"sm-eyebrow\">Smart Mobility & Dynamic Parking Navigation System</div>\n<div class=\"sm-hero-title\">${profile.name} parking advisory</div>\n<div class=\"sm-hero-subtitle\">${profile.address || profile.query || profile.areaName || \"\"}</div>\n<div class=\"sm-hero-copy\">${recommendationSentence}</div>\n</div>\n<div class=\"sm-kpi-stack\">\n<div class=\"sm-kpi\"><span class=\"sm-kpi-label\">Best option</span><span class=\"sm-kpi-value\">${primary ? primary.candidate.facilityName : \"Waiting for history\"}</span><span class=\"sm-kpi-sub\">${primaryType}</span></div>\n<div class=\"sm-kpi\"><span class=\"sm-kpi-label\">Travel time</span><span class=\"sm-kpi-value\">${formatMinutes(traffic.travelEstimateMinutes)}</span><span class=\"sm-kpi-sub\">${traffic.congestionLabel} traffic</span></div>\n</div>\n</div>\n<div class=\"sm-chip-row\">\n<div class=\"sm-chip\"><strong>Weather</strong><span>${weather.weatherSummary} (${weather.temperatureText})</span></div>\n<div class=\"sm-chip\"><strong>Rainfall</strong><span>${weather.rainfallSummary}</span></div>\n<div class=\"sm-chip\"><strong>System status</strong><span>${staleWarning}</span></div>\n</div>\n</div>`;\n\nconst roadsideFacilityName = bestRoadside ? bestRoadside.candidate.facilityName : \"No roadside cluster matched\";\nconst roadsideAvailable = bestRoadside ? (toNumber(bestRoadside.candidate.availableSpaces) || 0) : 0;\nconst roadsideTotal = bestRoadside ? (toNumber(bestRoadside.candidate.totalSpaces) || 0) : 0;\nconst roadsideAggregateAvailable = meterCandidates.reduce((sum, item) => sum + (toNumber(item.candidate.availableSpaces) || 0), 0);\nconst roadsideAggregateTotal = meterCandidates.reduce((sum, item) => sum + (toNumber(item.candidate.totalSpaces) || 0), 0);\nconst gaugePercent = Math.round(safeRatio(roadsideAggregateAvailable, roadsideAggregateTotal) * 100);\nconst meterSummary = `<div class=\"sm-card\"><div class=\"sm-eyebrow\">Nearest HK meter with space</div><div class=\"sm-title\">${roadsideFacilityName}</div><div class=\"sm-muted\">${roadsideAvailable} spaces currently available${roadsideTotal ? ` out of ${roadsideTotal}` : \"\"}. Across the 6 nearest HK meter clusters around ${profile.name}, there are ${roadsideAggregateAvailable} spaces in total.</div></div>`;\nconst depletionText = `<div class=\"sm-card\"><div class=\"sm-eyebrow\">Depletion countdown</div><div class=\"sm-title\">${bestRoadside && bestRoadside.depletion.minutesToFull !== null ? formatMinutes(bestRoadside.depletion.minutesToFull) : (bestRoadside ? bestRoadside.depletion.label : \"Unavailable\")}</div><div class=\"sm-muted\">${bestRoadside && bestRoadside.depletion.minutesToFull !== null ? `Predicted time to full occupancy for ${roadsideFacilityName} using the last 15-minute depletion trend.` : `Current trend assessment for ${roadsideFacilityName}.`}</div></div>`;\nconst riskHtml = `<div class=\"sm-card\" style=\"background:${bestRoadside && bestRoadside.arrivalUnsafe ? \"linear-gradient(135deg,#7f1d1d,#b91c1c)\" : \"linear-gradient(135deg,#0f766e,#0f766e)\"};color:#ffffff;\">\n<div class=\"sm-eyebrow\" style=\"color:rgba(255,255,255,0.76);\">Roadside risk assessment</div>\n<div class=\"sm-title\" style=\"color:#ffffff;margin-top:4px;\">${bestRoadside ? bestRoadside.riskText : \"Unavailable\"}</div>\n<div class=\"sm-metric-row\">\n<div class=\"sm-metric\"><span class=\"sm-metric-label\">Arrival</span><span class=\"sm-metric-value\">${formatMinutes(traffic.travelEstimateMinutes)}</span></div>\n<div class=\"sm-metric\"><span class=\"sm-metric-label\">Depletion window</span><span class=\"sm-metric-value\">${bestRoadside && bestRoadside.depletion.minutesToFull !== null ? formatMinutes(bestRoadside.depletion.minutesToFull) : \"N/A\"}</span></div>\n</div>\n</div>`;\n\nconst privateDisplayCandidates = privateCandidatesSorted.filter((item) => (toNumber(item.candidate.availableSpaces) || 0) > 0);\nconst privateRowsSource = (privateDisplayCandidates.length ? privateDisplayCandidates : privateCandidatesSorted).slice(0, 5);\nconst backupRows = privateRowsSource.map((item, index) => `\n<tr>\n<td>${index + 1}</td>\n<td>${item.candidate.facilityName}</td>\n<td>${item.candidate.distanceMeters !== null ? `${Math.round(item.candidate.distanceMeters)} m` : \"Nearby\"}</td>\n<td>${item.candidate.isCovered ? \"Indoor / covered\" : \"Outdoor / open-air\"}</td>\n<td><span class=\"sm-badge\" style=\"background:${item.arrivalUnsafe ? \"#b91c1c\" : \"#0f766e\"};\">${item.arrivalUnsafe ? \"Unsafe\" : \"Suitable\"}</span></td>\n</tr>`).join(\"\");\nconst privateHeaderText = privateDisplayCandidates.length ?\n    `${privateDisplayCandidates.length} nearby private car parks currently report available space.` :\n    \"No positive private counts are currently reported, so the nearest indoor backup options are listed.\";\nconst backupTableHtml = `<div class=\"sm-card\"><div class=\"sm-card-header\"><div><div class=\"sm-eyebrow\">Private Car Parks Near ${profile.name}</div><div class=\"sm-title\">Nearby indoor backup options</div></div><div class=\"sm-muted\">${privateHeaderText}</div></div>\n<table class=\"sm-table\">\n<thead><tr><th>Rank</th><th>Facility</th><th>Distance</th><th>Type</th><th>Arrival suitability</th></tr></thead>\n<tbody>${backupRows || '<tr><td colspan=\"5\">No nearby private car parks were matched for this destination.</td></tr>'}</tbody>\n</table></div>`;\nconst roadsideShortlistHtml = meterCandidates\n    .filter((item) => (toNumber(item.candidate.availableSpaces) || 0) > 0)\n    .sort((a, b) => (a.candidate.distanceMeters || 999999) - (b.candidate.distanceMeters || 999999))\n    .slice(0, 4)\n    .map((item, index) => `<tr><td>${index + 1}</td><td>${item.candidate.facilityName}</td><td>${toNumber(item.candidate.availableSpaces) || 0}</td><td>${item.candidate.distanceMeters !== null ? `${Math.round(item.candidate.distanceMeters)} m` : \"Nearby\"}</td></tr>`).join(\"\");\nconst backupInsightHtml = `<div class=\"sm-card\"><div class=\"sm-card-header\"><div><div class=\"sm-eyebrow\">HK meter shortlist</div><div class=\"sm-title\">Nearest outdoor public parking options</div></div><div class=\"sm-muted\">${profile.name} is currently anchored on ${profile.address || profile.query}. The table lists the nearest HK meters that still have space.</div></div><table class=\"sm-table\"><thead><tr><th>Rank</th><th>HK meter cluster</th><th>Available</th><th>Distance</th></tr></thead><tbody>${roadsideShortlistHtml || '<tr><td colspan=\"4\">No nearby HK meter with available space was found at this moment.</td></tr>'}</tbody></table></div>`;\n\nconst todaySeries = seriesForDay(meterDocs, profile, 0);\nconst yesterdaySeries = seriesForDay(meterDocs, profile, -1);\nconst recentSeries = recentWindowSeries(meterDocs, profile, 6, 0);\nconst previousWindowSeries = recentWindowSeries(meterDocs, profile, 6, 6);\nconst effectivePrimarySeries = todaySeries.length >= 2 ? todaySeries : recentSeries;\nconst effectiveComparisonSeries = yesterdaySeries.length >= 2 ? yesterdaySeries : previousWindowSeries;\nconst primarySeriesLabel = todaySeries.length >= 2 ? \"Today\" : \"Recent 6h\";\nconst comparisonSeriesLabel = yesterdaySeries.length >= 2 ? \"Yesterday\" : \"Previous 6h\";\n\nconst weeklySeries = weeklyAverageSeries(meterDocs, profile);\nconst weeklyLabel = meterDocs.length >= 24 ? \"7-Day Average\" : \"Collected History Average\";\nconst historyDescriptor = meterDocs.length >= 24 ?\n    `Lowest average availability periods over the last 7 days for ${profile.name}.` :\n    `History is still building. Showing the best available hotspot summary from ${meterDocs.length} collected snapshots for ${profile.name}.`;\n\nconst packagePayload = {\n    generatedAt: new Date().toISOString(),\n    destinationId: profile.id,\n    destinationName: profile.name,\n    preference,\n    travelEstimateMinutes: traffic.travelEstimateMinutes,\n    congestionLabel: traffic.congestionLabel,\n    weatherState: weather,\n    recommendation: {\n        primary: primary ? {\n            facilityId: primary.candidate.facilityId,\n            facilityName: primary.candidate.facilityName,\n            sourceType: primary.candidate.sourceType,\n            score: Number(primary.score.toFixed(2)),\n            rationale: recommendationSentence\n        } : null,\n        backupIndoor: backupIndoor ? {\n            facilityId: backupIndoor.candidate.facilityId,\n            facilityName: backupIndoor.candidate.facilityName,\n            score: Number(backupIndoor.score.toFixed(2))\n        } : null\n    },\n    widgets: {\n        topHtml,\n        mapHtml,\n        gaugePercent,\n        meterSummary,\n        depletionText,\n        riskHtml,\n        backupTableHtml,\n        backupInsightHtml,\n        hotspotHtml: hotspotTable(meterDocs, profile, historyDescriptor),\n        todayVsYesterdayChart: [{\n            series: [primarySeriesLabel, comparisonSeriesLabel],\n            data: [effectivePrimarySeries, effectiveComparisonSeries],\n            labels: [\"\"]\n        }],\n        weeklyPatternChart: [{\n            series: [weeklyLabel],\n            data: [weeklySeries],\n            labels: [\"\"]\n        }]\n    }\n};\n\nreturn [\n    { payload: packagePayload },\n    {\n        payload: {\n            generatedAt: packagePayload.generatedAt,\n            destinationId: packagePayload.destinationId,\n            destinationName: packagePayload.destinationName,\n            preference: packagePayload.preference,\n            travelEstimateMinutes: packagePayload.travelEstimateMinutes,\n            congestionLabel: packagePayload.congestionLabel,\n            weatherState: packagePayload.weatherState,\n            recommendation: packagePayload.recommendation\n        }\n    }\n];\n",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 1450,
+        "y": 120,
+        "wires": [
+            [
+                "lnk_dashboard_package_out"
+            ],
+            [
+                "mongo_recommendation_log"
+            ]
+        ]
+    },
+    {
+        "id": "lnk_dashboard_package_out",
+        "type": "link out",
+        "z": "tab_analytics",
+        "name": "Dashboard Package Out",
+        "mode": "link",
+        "links": [
+            "lnk_dashboard_package_in"
+        ],
+        "x": 1715,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "mongo_recommendation_log",
+        "type": "mongodb3 in",
+        "z": "tab_analytics",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Store recommendation_logs",
+        "collection": "recommendation_logs",
+        "operation": "insert",
+        "x": 1720,
+        "y": 160,
+        "wires": [
+            [
+                "dbg_recommendation_log"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_recommendation_log",
+        "type": "debug",
+        "z": "tab_analytics",
+        "name": "Recommendation Log",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 1950,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "inj_ingestion_timer",
+        "type": "inject",
+        "z": "tab_ingest",
+        "name": "Poll all data sources every 5 minutes",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "x": 220,
+        "y": 60,
+        "wires": [
+            [
+                "http_meter_info",
+                "http_meter_occupancy",
+                "http_private_info",
+                "http_private_vacancy",
+                "http_traffic",
+                "http_current_weather",
+                "http_hourly_rain"
+            ]
+        ]
+    },
+    {
+        "id": "http_meter_info",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Meter distribution CSV",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://resource.data.one.gov.hk/td/psiparkingspaces/spaceinfo/parkingspaces.csv",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 220,
+        "y": 140,
+        "wires": [
+            [
+                "fn_sanitize_meter_info_csv"
+            ]
+        ]
+    },
+    {
+        "id": "fn_sanitize_meter_info_csv",
+        "type": "function",
+        "z": "tab_ingest",
+        "name": "Sanitise meter info CSV",
+        "func": "\nconst raw = String(msg.payload || \"\").replace(/^\\uFEFF/, \"\");\nconst lines = raw.split(/\\r?\\n/);\nconst headerIndex = lines.findIndex((line) => line.startsWith(\"PoleId,ParkingSpaceId,\"));\nmsg.payload = headerIndex >= 0 ? lines.slice(headerIndex).join(\"\\n\") : raw;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 140,
+        "wires": [
+            [
+                "csv_meter_info"
+            ]
+        ]
+    },
+    {
+        "id": "csv_meter_info",
+        "type": "csv",
+        "z": "tab_ingest",
+        "name": "Parse meter distribution CSV",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 760,
+        "y": 140,
+        "wires": [
+            [
+                "chg_meter_info_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_meter_info_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic meterInfo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "meterInfo",
+                "tot": "str"
+            }
+        ],
+        "x": 1010,
+        "y": 140,
+        "wires": [
+            [
+                "join_meter_sources"
+            ]
+        ]
+    },
+    {
+        "id": "http_meter_occupancy",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Meter occupancy CSV",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://resource.data.one.gov.hk/td/psiparkingspaces/occupancystatus/occupancystatus.csv",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "csv_meter_occupancy"
+            ]
+        ]
+    },
+    {
+        "id": "csv_meter_occupancy",
+        "type": "csv",
+        "z": "tab_ingest",
+        "name": "Parse meter occupancy CSV",
+        "sep": ",",
+        "hdrin": true,
+        "hdrout": "none",
+        "multi": "mult",
+        "ret": "\\n",
+        "temp": "",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 760,
+        "y": 200,
+        "wires": [
+            [
+                "chg_meter_occupancy_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_meter_occupancy_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic meterOccupancy",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "meterOccupancy",
+                "tot": "str"
+            }
+        ],
+        "x": 1010,
+        "y": 200,
+        "wires": [
+            [
+                "join_meter_sources"
+            ]
+        ]
+    },
+    {
+        "id": "join_meter_sources",
+        "type": "join",
+        "z": "tab_ingest",
+        "name": "Join meter inputs",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "3",
+        "count": "2",
+        "reduceRight": false,
+        "x": 1260,
+        "y": 170,
+        "wires": [
+            [
+                "fn_normalize_meter"
+            ]
+        ]
+    },
+    {
+        "id": "fn_normalize_meter",
+        "type": "function",
+        "z": "tab_ingest",
+        "name": "Normalise meter snapshot",
+        "func": "\nfunction normalizeKey(text) {\n    return String(text || \"\").toLowerCase().replace(/[^a-z0-9]+/g, \"\");\n}\n\nfunction directLookup(obj, candidate) {\n    if (Object.prototype.hasOwnProperty.call(obj, candidate)) {\n        return obj[candidate];\n    }\n    const target = normalizeKey(candidate);\n    const key = Object.keys(obj).find((item) => normalizeKey(item) === target);\n    return key ? obj[key] : undefined;\n}\n\nfunction lookupByTokens(obj, tokens) {\n    for (const token of tokens) {\n        const direct = directLookup(obj, token);\n        if (direct !== undefined && direct !== null && direct !== \"\") {\n            return direct;\n        }\n    }\n    const key = Object.keys(obj).find((item) => {\n        const normalized = normalizeKey(item);\n        return tokens.some((token) => normalized.includes(normalizeKey(token)));\n    });\n    return key ? obj[key] : undefined;\n}\n\nfunction toNumber(value) {\n    if (value === undefined || value === null || value === \"\") {\n        return null;\n    }\n    const parsed = Number(String(value).replace(/[^0-9.\\-]+/g, \"\"));\n    return Number.isFinite(parsed) ? parsed : null;\n}\n\nfunction classifyVacancy(value) {\n    const raw = String(value || \"\").trim().toLowerCase();\n    if (!raw) {\n        return null;\n    }\n    if ([\"vacant\", \"available\", \"free\", \"yes\", \"y\", \"v\"].includes(raw)) {\n        return 1;\n    }\n    if ([\"occupied\", \"full\", \"unavailable\", \"no\", \"n\", \"o\"].includes(raw)) {\n        return 0;\n    }\n    return null;\n}\n\nconst infoRows = Array.isArray(msg.payload.meterInfo) ? msg.payload.meterInfo : [];\nconst occupancyRows = Array.isArray(msg.payload.meterOccupancy) ? msg.payload.meterOccupancy : [];\n\nconst metaBySpace = {};\nfor (const row of infoRows) {\n    const spaceId = lookupByTokens(row, [\"spaceid\", \"parkingspaceid\", \"parking_space_id\", \"meterid\", \"id\"]);\n    if (!spaceId) {\n        continue;\n    }\n    metaBySpace[String(spaceId)] = {\n        facilityName: lookupByTokens(row, [\"street\", \"roadname\", \"road\", \"streetname\", \"name\", \"location\"]) || `Meter Cluster ${spaceId}`,\n        district: lookupByTokens(row, [\"district\", \"districtname\", \"area\"]) || \"Unknown\",\n        latitude: toNumber(lookupByTokens(row, [\"latitude\", \"lat\", \"y\"])),\n        longitude: toNumber(lookupByTokens(row, [\"longitude\", \"lng\", \"lon\", \"x\"]))\n    };\n}\n\nconst groups = {};\nfor (const row of occupancyRows) {\n    const spaceId = lookupByTokens(row, [\"spaceid\", \"parkingspaceid\", \"parking_space_id\", \"meterid\", \"id\"]);\n    const meta = metaBySpace[String(spaceId)] || {};\n    const facilityName = meta.facilityName || lookupByTokens(row, [\"street\", \"roadname\", \"road\", \"location\", \"name\"]) || `Meter Cluster ${spaceId || \"Unknown\"}`;\n    const district = meta.district || lookupByTokens(row, [\"district\", \"districtname\", \"area\"]) || \"Unknown\";\n    const groupId = `${district}::${facilityName}`;\n    if (!groups[groupId]) {\n        groups[groupId] = {\n            sourceType: \"meter\",\n            facilityId: groupId,\n            facilityName,\n            district,\n            latitudeSum: 0,\n            longitudeSum: 0,\n            coordinateCount: 0,\n            availableSpaces: 0,\n            totalSpaces: 0,\n            isCovered: false\n        };\n    }\n    const item = groups[groupId];\n    const lat = meta.latitude !== null ? meta.latitude : toNumber(lookupByTokens(row, [\"latitude\", \"lat\", \"y\"]));\n    const lon = meta.longitude !== null ? meta.longitude : toNumber(lookupByTokens(row, [\"longitude\", \"lng\", \"lon\", \"x\"]));\n    if (lat !== null && lon !== null) {\n        item.latitudeSum += lat;\n        item.longitudeSum += lon;\n        item.coordinateCount += 1;\n    }\n\n    const rowAvailable = toNumber(lookupByTokens(row, [\"available\", \"vacant\", \"availablespaces\"]));\n    const rowTotal = toNumber(lookupByTokens(row, [\"totalspaces\", \"totalspaces\", \"spaces\", \"capacity\"]));\n    if (rowAvailable !== null || rowTotal !== null) {\n        item.availableSpaces += rowAvailable !== null ? rowAvailable : 0;\n        item.totalSpaces += rowTotal !== null ? rowTotal : Math.max(rowAvailable || 0, 0);\n        continue;\n    }\n\n    const vacancyFlag = classifyVacancy(lookupByTokens(row, [\"OccupancyStatus\", \"occupancystatus\", \"vacancystatus\", \"vacancy_status\"]));\n    if (vacancyFlag !== null) {\n        item.availableSpaces += vacancyFlag;\n        item.totalSpaces += 1;\n    }\n}\n\nconst snapshotTime = new Date().toISOString();\nconst records = Object.values(groups).map((item) => ({\n    sourceType: item.sourceType,\n    facilityId: item.facilityId,\n    facilityName: item.facilityName,\n    district: item.district,\n    latitude: item.coordinateCount ? item.latitudeSum / item.coordinateCount : null,\n    longitude: item.coordinateCount ? item.longitudeSum / item.coordinateCount : null,\n    availableSpaces: item.availableSpaces,\n    totalSpaces: item.totalSpaces || null,\n    isCovered: false,\n    snapshotTime\n}));\n\nmsg.payload = {\n    sourceType: \"meter\",\n    dataset: \"td_meter_occupancy_and_distribution\",\n    snapshotTime,\n    recordCount: records.length,\n    records\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1490,
+        "y": 170,
+        "wires": [
+            [
+                "mongo_store_meter"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_store_meter",
+        "type": "mongodb3 in",
+        "z": "tab_ingest",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Store parking_meter_snapshots",
+        "collection": "parking_meter_snapshots",
+        "operation": "insert",
+        "x": 1720,
+        "y": 170,
+        "wires": [
+            [
+                "dbg_store_meter"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_store_meter",
+        "type": "debug",
+        "z": "tab_ingest",
+        "name": "Meter snapshot stored",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload.recordCount",
+        "x": 1950,
+        "y": 170,
+        "wires": []
+    },
+    {
+        "id": "http_private_info",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Private car park info",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://api.data.gov.hk/v1/carpark-info-vacancy?data=info&vehicleTypes=privateCar&lang=en",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 200,
+        "y": 300,
+        "wires": [
+            [
+                "json_private_info"
+            ]
+        ]
+    },
+    {
+        "id": "json_private_info",
+        "type": "json",
+        "z": "tab_ingest",
+        "name": "Parse private info JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 500,
+        "y": 300,
+        "wires": [
+            [
+                "chg_private_info_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_private_info_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic privateInfo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "privateInfo",
+                "tot": "str"
+            }
+        ],
+        "x": 760,
+        "y": 300,
+        "wires": [
+            [
+                "join_private_sources"
+            ]
+        ]
+    },
+    {
+        "id": "http_private_vacancy",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Private car park vacancy",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://api.data.gov.hk/v1/carpark-info-vacancy?data=vacancy&vehicleTypes=privateCar&lang=en",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 210,
+        "y": 360,
+        "wires": [
+            [
+                "json_private_vacancy"
+            ]
+        ]
+    },
+    {
+        "id": "json_private_vacancy",
+        "type": "json",
+        "z": "tab_ingest",
+        "name": "Parse private vacancy JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 510,
+        "y": 360,
+        "wires": [
+            [
+                "chg_private_vacancy_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_private_vacancy_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic privateVacancy",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "privateVacancy",
+                "tot": "str"
+            }
+        ],
+        "x": 780,
+        "y": 360,
+        "wires": [
+            [
+                "join_private_sources"
+            ]
+        ]
+    },
+    {
+        "id": "join_private_sources",
+        "type": "join",
+        "z": "tab_ingest",
+        "name": "Join private inputs",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "3",
+        "count": "2",
+        "reduceRight": false,
+        "x": 1030,
+        "y": 330,
+        "wires": [
+            [
+                "fn_normalize_private"
+            ]
+        ]
+    },
+    {
+        "id": "fn_normalize_private",
+        "type": "function",
+        "z": "tab_ingest",
+        "name": "Normalise private snapshot",
+        "func": "\nfunction normalizeKey(text) {\n    return String(text || \"\").toLowerCase().replace(/[^a-z0-9]+/g, \"\");\n}\n\nfunction toNumber(value) {\n    if (value === undefined || value === null || value === \"\") {\n        return null;\n    }\n    const parsed = Number(String(value).replace(/[^0-9.\\-]+/g, \"\"));\n    return Number.isFinite(parsed) ? parsed : null;\n}\n\nfunction getValue(obj, candidates) {\n    for (const candidate of candidates) {\n        if (Object.prototype.hasOwnProperty.call(obj, candidate) && obj[candidate] !== undefined && obj[candidate] !== null && obj[candidate] !== \"\") {\n            return obj[candidate];\n        }\n    }\n    const normalizedMap = {};\n    for (const key of Object.keys(obj || {})) {\n        normalizedMap[normalizeKey(key)] = obj[key];\n    }\n    for (const candidate of candidates) {\n        const normalized = normalizeKey(candidate);\n        if (normalizedMap[normalized] !== undefined && normalizedMap[normalized] !== null && normalizedMap[normalized] !== \"\") {\n            return normalizedMap[normalized];\n        }\n    }\n    const fuzzyKey = Object.keys(obj || {}).find((key) => {\n        const normalized = normalizeKey(key);\n        return candidates.some((candidate) => normalized.includes(normalizeKey(candidate)));\n    });\n    return fuzzyKey ? obj[fuzzyKey] : undefined;\n}\n\nfunction collectObjects(node, bucket) {\n    if (Array.isArray(node)) {\n        node.forEach((item) => collectObjects(item, bucket));\n        return;\n    }\n    if (!node || typeof node !== \"object\") {\n        return;\n    }\n    const keys = Object.keys(node);\n    const normalizedKeys = keys.map((key) => normalizeKey(key));\n    const looksLikeCarpark = normalizedKeys.some((key) => [\"parkid\", \"carparkid\", \"id\", \"name\", \"displayname\", \"latitude\", \"vacancy\"].includes(key));\n    if (looksLikeCarpark && keys.length > 1) {\n        bucket.push(node);\n    }\n    keys.forEach((key) => collectObjects(node[key], bucket));\n}\n\nfunction extractPrivateVehicleValue(value) {\n    if (Array.isArray(value)) {\n        for (const item of value) {\n            const extracted = extractPrivateVehicleValue(item);\n            if (extracted !== null) {\n                return extracted;\n            }\n        }\n        return null;\n    }\n    if (value && typeof value === \"object\") {\n        const vehicleType = String(getValue(value, [\"vehicleType\", \"vehicletype\", \"type\"]) || \"\").toLowerCase();\n        if (!vehicleType || vehicleType.includes(\"private\")) {\n            return toNumber(getValue(value, [\"vacancy\", \"available\", \"vacant\", \"value\", \"space\", \"spaces\"]));\n        }\n        return null;\n    }\n    return toNumber(value);\n}\n\nconst infoObjects = [];\nconst vacancyObjects = [];\ncollectObjects(msg.payload.privateInfo, infoObjects);\ncollectObjects(msg.payload.privateVacancy, vacancyObjects);\n\nconst infoById = {};\nfor (const item of infoObjects) {\n    const parkId = getValue(item, [\"park_Id\", \"parkId\", \"carparkId\", \"id\"]);\n    if (!parkId) {\n        continue;\n    }\n    infoById[String(parkId)] = item;\n}\n\nconst vacancyById = {};\nfor (const item of vacancyObjects) {\n    const parkId = getValue(item, [\"park_Id\", \"parkId\", \"carparkId\", \"id\"]);\n    if (!parkId) {\n        continue;\n    }\n    vacancyById[String(parkId)] = item;\n}\n\nconst snapshotTime = new Date().toISOString();\nconst ids = Array.from(new Set(Object.keys(infoById).concat(Object.keys(vacancyById))));\nconst records = ids.map((parkId) => {\n    const info = infoById[parkId] || {};\n    const vacancy = vacancyById[parkId] || {};\n    const facilityName = getValue(info, [\"name\", \"displayName\", \"carparkName\", \"parkName\"]) ||\n        getValue(vacancy, [\"name\", \"displayName\", \"carparkName\", \"parkName\"]) ||\n        `Private Car Park ${parkId}`;\n    const district = getValue(info, [\"district\", \"districtName\", \"district_en\"]) ||\n        getValue(vacancy, [\"district\", \"districtName\", \"district_en\"]) ||\n        \"Unknown\";\n    const coveredDescriptor = String(getValue(info, [\"carParkType\", \"type\", \"remarks\", \"address\", \"name\"]) || \"\").toLowerCase();\n    const isCovered = !coveredDescriptor.includes(\"open air\");\n    const availableSpaces = extractPrivateVehicleValue(getValue(vacancy, [\"privateCar\", \"vacancy\", \"vacancies\", \"parkingSpace\"]));\n    const totalSpaces = toNumber(getValue(info, [\"totalCapacity\", \"capacity\", \"spaces\", \"spaceCount\"]));\n    return {\n        sourceType: \"private\",\n        facilityId: parkId,\n        facilityName,\n        district,\n        latitude: toNumber(getValue(info, [\"latitude\", \"lat\", \"y\"])),\n        longitude: toNumber(getValue(info, [\"longitude\", \"lng\", \"lon\", \"x\"])),\n        availableSpaces: availableSpaces !== null ? availableSpaces : 0,\n        totalSpaces,\n        isCovered,\n        snapshotTime\n    };\n});\n\nmsg.payload = {\n    sourceType: \"private\",\n    dataset: \"dpo_one_stop_carpark_info_vacancy\",\n    snapshotTime,\n    recordCount: records.length,\n    records\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1265,
+        "y": 330,
+        "wires": [
+            [
+                "mongo_store_private"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_store_private",
+        "type": "mongodb3 in",
+        "z": "tab_ingest",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Store private_carpark_snapshots",
+        "collection": "private_carpark_snapshots",
+        "operation": "insert",
+        "x": 1505,
+        "y": 330,
+        "wires": [
+            [
+                "dbg_store_private"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_store_private",
+        "type": "debug",
+        "z": "tab_ingest",
+        "name": "Private snapshot stored",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload.recordCount",
+        "x": 1740,
+        "y": 330,
+        "wires": []
+    },
+    {
+        "id": "http_traffic",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Journey time indicators XML",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://resource.data.one.gov.hk/td/jss/Journeytimev2.xml",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 220,
+        "y": 470,
+        "wires": [
+            [
+                "xml_traffic"
+            ]
+        ]
+    },
+    {
+        "id": "xml_traffic",
+        "type": "xml",
+        "z": "tab_ingest",
+        "name": "Parse traffic XML",
+        "property": "payload",
+        "attr": "",
+        "chr": "",
+        "x": 490,
+        "y": 470,
+        "wires": [
+            [
+                "fn_normalize_traffic"
+            ]
+        ]
+    },
+    {
+        "id": "fn_normalize_traffic",
+        "type": "function",
+        "z": "tab_ingest",
+        "name": "Normalise traffic snapshot",
+        "func": "\nfunction flatten(obj, prefix, bag) {\n    if (Array.isArray(obj)) {\n        obj.forEach((item, index) => flatten(item, `${prefix}${index}.`, bag));\n        return;\n    }\n    if (!obj || typeof obj !== \"object\") {\n        bag[prefix.slice(0, -1)] = obj;\n        return;\n    }\n    Object.keys(obj).forEach((key) => flatten(obj[key], `${prefix}${key}.`, bag));\n}\n\nfunction numericFromFlat(flat, tokens) {\n    for (const key of Object.keys(flat)) {\n        const normalized = key.toLowerCase();\n        if (tokens.some((token) => normalized.includes(token))) {\n            const raw = flat[key];\n            const parsed = Number(String(raw).replace(/[^0-9.\\-]+/g, \"\"));\n            if (Number.isFinite(parsed)) {\n                return parsed;\n            }\n        }\n    }\n    return null;\n}\n\nfunction textFromFlat(flat, tokens) {\n    for (const key of Object.keys(flat)) {\n        const normalized = key.toLowerCase();\n        if (tokens.some((token) => normalized.includes(token))) {\n            const raw = flat[key];\n            if (raw !== undefined && raw !== null && String(raw).trim()) {\n                return String(raw).trim();\n            }\n        }\n    }\n    return \"\";\n}\n\nfunction traverse(node, bucket) {\n    if (Array.isArray(node)) {\n        node.forEach((item) => traverse(item, bucket));\n        return;\n    }\n    if (!node || typeof node !== \"object\") {\n        return;\n    }\n    const flat = {};\n    flatten(node, \"\", flat);\n    const currentMinutes = numericFromFlat(flat, [\"journeytime\", \"traveltime\", \"timevalue\", \"currenttime\", \"journey\"]);\n    const referenceMinutes = numericFromFlat(flat, [\"normal\", \"reference\", \"freeflow\", \"basetime\"]);\n    const labelParts = [\n        textFromFlat(flat, [\"locationid\", \"jtiid\", \"id\"]),\n        textFromFlat(flat, [\"from\", \"origin\", \"start\"]),\n        textFromFlat(flat, [\"to\", \"destination\", \"dest\"]),\n        textFromFlat(flat, [\"road\", \"route\", \"corridor\", \"description\"])\n    ].filter(Boolean);\n    if (currentMinutes !== null && labelParts.length) {\n        const label = labelParts.join(\" | \");\n        const congestionFactor = referenceMinutes && referenceMinutes > 0 ? currentMinutes / referenceMinutes : 1;\n        bucket.push({\n            label,\n            currentMinutes,\n            referenceMinutes,\n            congestionFactor\n        });\n    }\n    Object.keys(node).forEach((key) => traverse(node[key], bucket));\n}\n\nconst records = [];\ntraverse(msg.payload, records);\nconst deduped = [];\nconst seen = new Set();\nfor (const item of records) {\n    if (seen.has(item.label)) {\n        continue;\n    }\n    seen.add(item.label);\n    deduped.push(item);\n}\n\nconst snapshotTime = new Date().toISOString();\nmsg.payload = {\n    sourceType: \"traffic\",\n    dataset: \"td_journey_time_indicators_v2\",\n    snapshotTime,\n    recordCount: deduped.length,\n    records: deduped\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 735,
+        "y": 470,
+        "wires": [
+            [
+                "mongo_store_traffic"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_store_traffic",
+        "type": "mongodb3 in",
+        "z": "tab_ingest",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Store traffic_snapshots",
+        "collection": "traffic_snapshots",
+        "operation": "insert",
+        "x": 980,
+        "y": 470,
+        "wires": [
+            [
+                "dbg_store_traffic"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_store_traffic",
+        "type": "debug",
+        "z": "tab_ingest",
+        "name": "Traffic snapshot stored",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload.recordCount",
+        "x": 1210,
+        "y": 470,
+        "wires": []
+    },
+    {
+        "id": "http_current_weather",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Current weather report",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 215,
+        "y": 580,
+        "wires": [
+            [
+                "json_current_weather"
+            ]
+        ]
+    },
+    {
+        "id": "json_current_weather",
+        "type": "json",
+        "z": "tab_ingest",
+        "name": "Parse current weather JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 500,
+        "y": 580,
+        "wires": [
+            [
+                "chg_current_weather_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_current_weather_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic currentWeather",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "currentWeather",
+                "tot": "str"
+            }
+        ],
+        "x": 780,
+        "y": 580,
+        "wires": [
+            [
+                "join_weather_sources"
+            ]
+        ]
+    },
+    {
+        "id": "http_hourly_rain",
+        "type": "http request",
+        "z": "tab_ingest",
+        "name": "Hourly rainfall report",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "https://data.weather.gov.hk/weatherAPI/opendata/hourlyRainfall.php?lang=en",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 205,
+        "y": 640,
+        "wires": [
+            [
+                "json_hourly_rain"
+            ]
+        ]
+    },
+    {
+        "id": "json_hourly_rain",
+        "type": "json",
+        "z": "tab_ingest",
+        "name": "Parse rainfall JSON",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 490,
+        "y": 640,
+        "wires": [
+            [
+                "chg_hourly_rain_topic"
+            ]
+        ]
+    },
+    {
+        "id": "chg_hourly_rain_topic",
+        "type": "change",
+        "z": "tab_ingest",
+        "name": "Topic hourlyRain",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "hourlyRain",
+                "tot": "str"
+            }
+        ],
+        "x": 765,
+        "y": 640,
+        "wires": [
+            [
+                "join_weather_sources"
+            ]
+        ]
+    },
+    {
+        "id": "join_weather_sources",
+        "type": "join",
+        "z": "tab_ingest",
+        "name": "Join weather inputs",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "useparts": false,
+        "accumulate": false,
+        "timeout": "3",
+        "count": "2",
+        "reduceRight": false,
+        "x": 1015,
+        "y": 610,
+        "wires": [
+            [
+                "fn_normalize_weather"
+            ]
+        ]
+    },
+    {
+        "id": "fn_normalize_weather",
+        "type": "function",
+        "z": "tab_ingest",
+        "name": "Normalise weather snapshot",
+        "func": "\nfunction toNumber(value) {\n    if (value === undefined || value === null || value === \"\") {\n        return null;\n    }\n    const parsed = Number(String(value).replace(/[^0-9.\\-]+/g, \"\"));\n    return Number.isFinite(parsed) ? parsed : null;\n}\n\nfunction getCurrentTemperature(payload) {\n    const block = payload && payload.temperature && Array.isArray(payload.temperature.data) ? payload.temperature.data : [];\n    const hkoRecord = block.find((item) => String(item.place || \"\").toLowerCase() === \"hong kong observatory\");\n    if (hkoRecord) {\n        return toNumber(hkoRecord.value);\n    }\n    return block.length ? toNumber(block[0].value) : null;\n}\n\nfunction getWeatherIconNames(payload) {\n    const names = payload && Array.isArray(payload.icon) ? payload.icon.map((item) => String(item)) : [];\n    return names;\n}\n\nfunction collectRainfall(payload) {\n    const rows = payload && Array.isArray(payload.hourlyRainfall) ? payload.hourlyRainfall : [];\n    const mapped = rows.map((item) => ({\n        automaticWeatherStation: item.automaticWeatherStation || item.automaticWeatherStation_en || item.name || \"Unknown\",\n        rainfall: toNumber(item.value)\n    }));\n    const maxRainfall = mapped.reduce((max, item) => Math.max(max, item.rainfall || 0), 0);\n    return { mapped, maxRainfall };\n}\n\nconst currentWeather = msg.payload.currentWeather || {};\nconst hourlyRain = msg.payload.hourlyRain || {};\nconst rainfall = collectRainfall(hourlyRain);\nconst warningMessages = Array.isArray(currentWeather.warningMessage) ? currentWeather.warningMessage : [];\nconst isRaining = rainfall.maxRainfall >= 0.5 || warningMessages.some((item) => String(item).toLowerCase().includes(\"rain\"));\nconst snapshotTime = new Date().toISOString();\n\nmsg.payload = {\n    sourceType: \"weather\",\n    dataset: \"hko_current_weather_and_hourly_rainfall\",\n    snapshotTime,\n    temperatureCelsius: getCurrentTemperature(currentWeather),\n    humidity: toNumber(currentWeather.humidity && currentWeather.humidity.data && currentWeather.humidity.data[0] && currentWeather.humidity.data[0].value),\n    weatherIcons: getWeatherIconNames(currentWeather),\n    warningMessages,\n    rainfallStations: rainfall.mapped,\n    maxRainfall: rainfall.maxRainfall,\n    isRaining\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1250,
+        "y": 610,
+        "wires": [
+            [
+                "mongo_store_weather"
+            ]
+        ]
+    },
+    {
+        "id": "mongo_store_weather",
+        "type": "mongodb3 in",
+        "z": "tab_ingest",
+        "service": "_ext_",
+        "configNode": "cfg_mongo",
+        "name": "Store weather_snapshots",
+        "collection": "weather_snapshots",
+        "operation": "insert",
+        "x": 1485,
+        "y": 610,
+        "wires": [
+            [
+                "dbg_store_weather"
+            ]
+        ]
+    },
+    {
+        "id": "dbg_store_weather",
+        "type": "debug",
+        "z": "tab_ingest",
+        "name": "Weather snapshot stored",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "x": 1715,
+        "y": 610,
+        "wires": []
+    }
+]

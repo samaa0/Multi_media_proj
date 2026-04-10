@@ -1,0 +1,21 @@
+{
+  "name": "local-nodered",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:nodered": "node_modules/.bin/node-red --settings ./settings.js",
+    "start:mongo": "node ./start-local-mongodb.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "mongodb-memory-server": "^11.0.1",
+    "node-red": "^4.1.8",
+    "node-red-contrib-mongodb3": "^2.0.1",
+    "node-red-dashboard": "^3.6.6"
+  }
+}
