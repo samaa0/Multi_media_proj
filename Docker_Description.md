@@ -72,6 +72,4 @@ The Docker-based environment hosts a smart-city dashboard that:
 - computes predictive parking recommendations
 - presents smart mobility insights through an English Node-RED dashboard
 
-## Submission note
 
-This file is intended to satisfy the assignment requirement for a Docker description document in the absence of a Docker Hub ID submission.
