@@ -130,15 +130,45 @@ function buildKeywords(...parts) {
     return Array.from(new Set(text.split(/[^a-z0-9]+/).filter((item) => item && item.length > 2))).slice(0, 10);
 }
 
-function scoreResult(result, query) {
-    const haystack = [result.nameEN, result.addressEN, result.districtEN].filter(Boolean).join(" ").toLowerCase();
-    const normalizedQuery = String(query || "").toLowerCase();
-    let score = 0;
-    if (haystack.includes(normalizedQuery)) {
-        score += 50;
+function normalizeText(text) {
+    return String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function detectRegion(result) {
+    const district = String(result && result.districtEN || "");
+    const address = String(result && result.addressEN || "");
+    const haystack = `${district} ${address}`.toLowerCase();
+    if (/(central and western|wan chai|eastern|southern|hong kong)/.test(haystack)) {
+        return "Hong Kong Island";
     }
-    const tokens = normalizedQuery.split(/[^a-z0-9]+/).filter((item) => item && item.length > 1);
+    if (/(yau tsim mong|sham shui po|kowloon city|wong tai sin|kwun tong|kowloon)/.test(haystack)) {
+        return "Kowloon";
+    }
+    if (/(tsuen wan|tuen mun|yuen long|north district|tai po|sha tin|sai kung|islands|new territories|tseung kwan o|ma on shan|tin shui wai)/.test(haystack)) {
+        return "New Territories";
+    }
+    return "All Hong Kong";
+}
+
+function scoreResult(result, query) {
+    const haystack = normalizeText([result.nameEN, result.addressEN, result.districtEN].filter(Boolean).join(" "));
+    const normalizedQuery = normalizeText(query);
+    let score = 0;
+    if (!normalizedQuery) {
+        return score;
+    }
+    if (haystack.includes(normalizedQuery)) {
+        score += 80;
+    }
+    const tokens = normalizedQuery.split(/\s+/).filter((item) => item && item.length > 0);
     for (const token of tokens) {
+        if (haystack.includes(token)) {
+            score += token.length <= 3 ? 14 : 10;
+        }
+        const words = haystack.split(/\s+/);
+        if (words.some((word) => word.startsWith(token))) {
+            score += 8;
+        }
         if (String(result.nameEN || "").toLowerCase().includes(token)) {
             score += 12;
         }
@@ -146,7 +176,7 @@ function scoreResult(result, query) {
             score += 5;
         }
         if (String(result.districtEN || "").toLowerCase().includes(token)) {
-            score += 2;
+            score += 4;
         }
     }
     return score;
@@ -174,28 +204,41 @@ let selectedProfile = global.get("selectedDestinationProfile") || fallback;
 const profiles = [];
 if (results.length && proj4) {
     proj4.defs("EPSG:2326", "+proj=tmerc +lat_0=22.31213333333334 +lon_0=114.1785555555556 +k=1 +x_0=836694.05 +y_0=819069.8 +ellps=intl +towgs84=-162.619,-276.959,-161.764,-1.719,0.067,1.092,1.27 +units=m +no_defs +type=crs");
-    const ranked = results.slice().sort((a, b) => scoreResult(b, query) - scoreResult(a, query)).slice(0, 8);
+    const ranked = results
+        .slice()
+        .sort((a, b) => scoreResult(b, query) - scoreResult(a, query))
+        .slice(0, 12);
+    const seenIds = new Set();
     for (const item of ranked) {
         const converted = proj4("EPSG:2326", "EPSG:4326", [Number(item.x), Number(item.y)]);
         const longitude = Array.isArray(converted) ? Number(converted[0]) : fallback.longitude;
         const latitude = Array.isArray(converted) ? Number(converted[1]) : fallback.latitude;
-        profiles.push({
+        const profile = {
             id: slugify(`${item.nameEN || query}_${item.addressEN || item.districtEN || ""}`) || "custom_destination",
             name: item.nameEN || query,
             query,
             areaName: (item.districtEN || fallback.areaName || "Hong Kong").replace(/ District$/i, ""),
             district: item.districtEN || fallback.district,
+            region: detectRegion(item),
             address: item.addressEN || query,
             latitude: Number.isFinite(latitude) ? latitude : fallback.latitude,
             longitude: Number.isFinite(longitude) ? longitude : fallback.longitude,
             radiusMeters: 1200,
             trafficKeywords: buildKeywords(query, item.nameEN, item.addressEN, item.districtEN)
-        });
+        };
+        if (seenIds.has(profile.id)) {
+            continue;
+        }
+        seenIds.add(profile.id);
+        profiles.push(profile);
     }
 }
 
 if (!profiles.length) {
-    profiles.push(selectedProfile);
+    profiles.push({
+        ...selectedProfile,
+        region: selectedProfile.region || detectRegion(selectedProfile)
+    });
 }
 
 selectedProfile = profiles[0];
@@ -204,9 +247,7 @@ global.set("selectedDestinationProfile", selectedProfile);
 global.set("searchResultProfiles", profiles);
 
 const dropdownOptions = profiles.map((item) => ({
-    label: `${item.name} · ${item.address || item.areaName}`,
-    value: item.id,
-    type: "str"
+    [`${item.name} · ${item.region || "All Hong Kong"} · ${item.district || item.areaName}`]: item.id
 }));
 
 return [
@@ -949,6 +990,26 @@ function recentWindowSeries(docs, profile, hours, offsetHours) {
         }));
 }
 
+function ensureRenderableSeries(series, fallbackValue, minutesSpan) {
+    if (series.length >= 2) {
+        return series;
+    }
+    if (series.length === 1) {
+        const point = series[0];
+        const anchor = new Date(point.x);
+        return [
+            { x: new Date(anchor.getTime() - ((minutesSpan || 30) * 60 * 1000)), y: point.y },
+            point
+        ];
+    }
+    const end = new Date();
+    const start = new Date(end.getTime() - ((minutesSpan || 30) * 60 * 1000));
+    return [
+        { x: start, y: fallbackValue || 0 },
+        { x: end, y: fallbackValue || 0 }
+    ];
+}
+
 function weeklyAverageSeries(docs, profile) {
     const buckets = {};
     sortDocs(docs).forEach((doc) => {
@@ -1076,7 +1137,7 @@ const recommendationSentence = primary ?
     "No parking recommendation can be produced yet because the historical cache is still empty.";
 
 const osmDirectUrl = `https://www.openstreetmap.org/?mlat=${profile.latitude}&mlon=${profile.longitude}#map=17/${profile.latitude}/${profile.longitude}`;
-const mapHtml = `<div class="sm-card sm-destination-card"><div class="sm-card-header"><div><div class="sm-eyebrow">Selected destination</div><div class="sm-title">${profile.name}</div></div><a class="sm-map-link" href="${osmDirectUrl}" target="_blank" rel="noopener noreferrer">Open map</a></div><div class="sm-destination-address">${profile.address || profile.query || profile.areaName || ""}</div><div class="sm-destination-meta"><span class="sm-inline-chip">${profile.areaName || "Hong Kong"}</span><span class="sm-inline-chip">${profile.district || "Unknown district"}</span><span class="sm-inline-chip">${profile.latitude.toFixed(4)}, ${profile.longitude.toFixed(4)}</span></div></div>`;
+const mapHtml = `<div class="sm-card sm-destination-card"><div class="sm-card-header"><div><div class="sm-eyebrow">Selected destination</div><div class="sm-title">${profile.name}</div></div><a class="sm-map-link" href="${osmDirectUrl}" target="_blank" rel="noopener noreferrer">Open map</a></div><div class="sm-destination-address">${profile.address || profile.query || profile.areaName || ""}</div><div class="sm-destination-meta"><span class="sm-inline-chip">${profile.region || "All Hong Kong"}</span><span class="sm-inline-chip">${profile.areaName || "Hong Kong"}</span><span class="sm-inline-chip">${profile.district || "Unknown district"}</span><span class="sm-inline-chip">${profile.latitude.toFixed(4)}, ${profile.longitude.toFixed(4)}</span></div></div>`;
 
 const primaryType = primary ? (primary.candidate.isCovered ? "Covered backup" : "Roadside meter") : "Pending";
 const topHtml = `<div class="sm-hero">
@@ -1155,6 +1216,10 @@ const weeklyLabel = meterDocs.length >= 24 ? "7-Day Average" : "Collected Histor
 const historyDescriptor = meterDocs.length >= 24 ?
     `Lowest average availability periods over the last 7 days for ${profile.name}.` :
     `History is still building. Showing the best available hotspot summary from ${meterDocs.length} collected snapshots for ${profile.name}.`;
+const fallbackAvailability = aggregateNearbyAvailability(latestMeterDoc || {}, profile);
+const renderablePrimarySeries = ensureRenderableSeries(effectivePrimarySeries, fallbackAvailability, 30);
+const renderableComparisonSeries = ensureRenderableSeries(effectiveComparisonSeries, fallbackAvailability, 30);
+const renderableWeeklySeries = ensureRenderableSeries(weeklySeries.filter((point) => point.y > 0), fallbackAvailability, 60);
 
 const packagePayload = {
     generatedAt: new Date().toISOString(),
@@ -1190,12 +1255,12 @@ const packagePayload = {
         hotspotHtml: hotspotTable(meterDocs, profile, historyDescriptor),
         todayVsYesterdayChart: [{
             series: [primarySeriesLabel, comparisonSeriesLabel],
-            data: [effectivePrimarySeries, effectiveComparisonSeries],
+            data: [renderablePrimarySeries, renderableComparisonSeries],
             labels: [""]
         }],
         weeklyPatternChart: [{
             series: [weeklyLabel],
-            data: [weeklySeries],
+            data: [renderableWeeklySeries],
             labels: [""]
         }]
     }
